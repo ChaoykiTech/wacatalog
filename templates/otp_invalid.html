@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invalid OTP - WACatalog</title>
+
+<style>
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #e0f7e0 100%);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container */
+.container {
+    max-width: 500px;
+    padding: 25px 20px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Header */
+h2 {
+    color: #d32f2f; /* Red for error */
+    margin-bottom: 15px;
+}
+
+/* Paragraph */
+p {
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+/* Back Button */
+.back-link {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #228B22;
+    color: white;
+    font-weight: bold;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.back-link:hover {
+    background: #006400;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Invalid or Expired OTP</h2>
+    <p>This password reset link is either expired or already used.</p>
+    <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
+</div>
+
+</body>
+</html>

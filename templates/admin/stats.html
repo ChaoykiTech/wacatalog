@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WACatalog Admin Stats</title>
+<style>
+    /* --- Base Styles --- */
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #ffffff 0%, #e0f7e0 100%); color:#333; min-height:100vh; display:flex; flex-direction:column; }
+
+    a { text-decoration:none; }
+
+    /* --- Container --- */
+    .container { max-width:1000px; margin:100px auto 30px; padding:20px; flex:1; }
+
+    /* --- Header --- */
+    .header { text-align:center; margin-bottom:30px; }
+    .header h2 { color: #228B22; font-size:2em; }
+
+    /* --- Navigation --- */
+    .nav { margin-bottom:20px; }
+    .nav a { 
+        display:inline-block; 
+        padding:10px 15px; 
+        background: rgba(255,255,255,0.6); 
+        color:#228B22; 
+        border-radius:25px; 
+        font-weight:bold; 
+        transition: background 0.3s, transform 0.2s; 
+        backdrop-filter: blur(5px); 
+        box-shadow:0 4px 12px rgba(0,0,0,0.1); 
+    }
+    .nav a:hover { background:#228B22; color:#fff; transform: translateY(-2px); }
+
+    /* --- Grid --- */
+    .grid { 
+        display:grid; 
+        grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); 
+        gap:20px; 
+    }
+
+    /* --- Stats Card --- */
+    .card { 
+        background: rgba(255,255,255,0.6); 
+        padding:25px; 
+        border-radius:15px; 
+        text-align:center; 
+        box-shadow:0 8px 32px rgba(0,0,0,0.1); 
+        backdrop-filter: blur(10px); 
+        transition: transform 0.3s, box-shadow 0.3s; 
+    }
+    .card:hover { transform: translateY(-5px); box-shadow:0 12px 40px rgba(0,0,0,0.15); }
+
+    .card h3 { font-size:1.2em; color:#006400; margin-bottom:10px; }
+    .card h1 { font-size:2.5em; color:#1e6b3a; }
+
+    /* --- Footer --- */
+    footer { text-align:center; padding:20px 0; font-size:13px; color:#555; margin-top:30px; }
+
+    /* --- Responsive --- */
+    @media(max-width:768px){ .container { margin:120px 15px 30px; padding:15px; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h2>WACatalog Platform Overview</h2>
+    </div>
+
+    <div class="nav">
+        <a href="/admin/">← Back to Admin</a>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Total Vendors</h3>
+            <h1>{{ total_vendors }}</h1>
+        </div>
+        <div class="card">
+            <h3>Total Products</h3>
+            <h1>{{ total_products }}</h1>
+        </div>
+        <div class="card">
+            <h3>New Signups Today</h3>
+            <h1>{{ new_today }}</h1>
+        </div>
+        <div class="card">
+            <h3>Free Plan</h3>
+            <h1>{{ free }}</h1>
+        </div>
+        <div class="card">
+            <h3>Basic Plan</h3>
+            <h1>{{ basic }}</h1>
+        </div>
+        <div class="card">
+            <h3>Pro Plan</h3>
+            <h1>{{ pro }}</h1>
+        </div>
+    </div>
+
+    <footer>
+        &copy; {{ current_year }} WACatalog Admin Panel
+    </footer>
+
+</div>
+
+</body>
+</html>

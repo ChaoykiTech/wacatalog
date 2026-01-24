@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upgrade Plan - WACatalog</title>
+<style>
+    /* --- Base Styles --- */
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #ffffff 0%, #e0f7e0 100%); color:#333; min-height:100vh; display:flex; flex-direction:column; }
+    a { text-decoration:none; }
+
+    /* --- Container --- */
+    .container { max-width:1000px; margin:100px auto 30px; padding:20px; flex:1; }
+
+    /* --- Header --- */
+    .header { text-align:center; margin-bottom:30px; }
+    .header h2 { color: #228B22; font-size:2em; }
+
+    /* --- Alert --- */
+    .alert { 
+        background: rgba(255, 255, 255, 0.6); 
+        border-left: 4px solid orange; 
+        padding: 15px; 
+        border-radius:12px; 
+        margin-bottom:25px;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* --- Plans Grid --- */
+    .plans { 
+        display:grid; 
+        grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); 
+        gap:20px; 
+    }
+
+    /* --- Plan Card --- */
+    .card { 
+        background: rgba(255,255,255,0.6); 
+        border-radius:15px; 
+        padding:20px; 
+        box-shadow:0 8px 32px rgba(0,0,0,0.1); 
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow:0 12px 40px rgba(0,0,0,0.15); }
+    .card h3 { color: #006400; margin-bottom:15px; font-size:1.5em; }
+    .card ul { list-style: disc; padding-left:20px; margin-bottom:15px; }
+    .card ul li { margin-bottom:8px; }
+
+    /* --- Buttons --- */
+    .btn {
+        display:inline-block;
+        padding:10px 20px;
+        border-radius:50px;
+        font-weight:bold;
+        color:#fff;
+        text-align:center;
+        transition: background 0.3s, transform 0.2s;
+        margin-top:10px;
+    }
+    .btn-basic { background:#228B22; }
+    .btn-basic:hover { background:#006400; transform: translateY(-2px); }
+    .btn-pro { background:#1e6b3a; }
+    .btn-pro:hover { background:#14521f; transform: translateY(-2px); }
+    .btn-back { background:#ccc; color:#333; }
+    .btn-back:hover { background:#bbb; transform: translateY(-2px); display:inline-block; }
+
+    /* --- Current Plan Tag --- */
+    .current-plan {
+        display:inline-block;
+        padding:5px 12px;
+        background:#4caf50;
+        color:white;
+        border-radius:25px;
+        font-weight:bold;
+        margin-top:10px;
+    }
+
+    /* --- Footer --- */
+    footer { text-align:center; padding:20px 0; font-size:13px; color:#555; }
+
+    /* --- Responsive --- */
+    @media(max-width:768px){ .container { margin:120px 15px 30px; padding:15px; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h2>Upgrade Your Store</h2>
+    </div>
+
+    <div class="alert">
+        You have reached the limit of your current plan: 
+        <strong>{{ vendor.subscription|title }}</strong>
+    </div>
+
+    <div class="plans">
+
+        <!-- FREE PLAN -->
+        <div class="card">
+            <h3>Free Plan</h3>
+            <ul>
+                <li>5 Products Only</li>
+                <li>Public Store Link</li>
+                <li>WhatsApp Orders</li>
+            </ul>
+            {% if vendor.subscription == "free" %}
+                <span class="current-plan">Current Plan</span>
+            {% endif %}
+        </div>
+
+        <!-- BASIC PLAN -->
+        <div class="card">
+            <h3>Basic Plan</h3>
+            <ul>
+                <li>Up to 100 Products</li>
+                <li>Store Screenshot</li>
+                <li>Priority Support</li>
+            </ul>
+            <a class="btn btn-basic" href="https://api.whatsapp.com/send?phone=2348137992319&text={{ message_basic }}" target="_blank">
+                Upgrade to Basic
+            </a>
+        </div>
+
+        <!-- PRO PLAN -->
+        <div class="card">
+            <h3>Pro Plan</h3>
+            <ul>
+                <li>Unlimited Products</li>
+                <li>Featured Store</li>
+                <li>Analytics</li>
+                <li>Direct Support</li>
+            </ul>
+            <a class="btn btn-pro" href="https://api.whatsapp.com/send?phone=2348137992319&text={{ message_pro }}" target="_blank">
+                Upgrade to Pro
+            </a>
+        </div>
+
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="btn btn-back">Back to Dashboard</a>
+
+    <footer>
+        &copy; {{ current_year }} WACatalog - Empowering businesses in Nigeria and Africa.
+    </footer>
+
+</div>
+
+</body>
+</html>

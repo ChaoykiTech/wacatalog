@@ -1,0 +1,26 @@
+from django.urls import path
+from .views import *
+
+urlpatterns = [
+    path('', home, name='home'),
+    path('register/', register, name='register'),
+    path('login/', login_view, name='login'),
+    path('dashboard/', dashboard, name='dashboard'),
+    path('store/<slug:vendor_slug>/', storefront, name='storefront'),
+    path('update_vendor/', update_vendor, name='update_vendor'),
+    path('logout/', logout_view, name='logout'),
+    path('products/add/', add_product, name='add_product'),
+    path('products/', my_products, name='my_products'),
+    path('products/toggle/<int:id>/', toggle_product, name='toggle_product'),
+    path('products/get/<int:id>/', get_product, name='get_product'),
+    path('products/update/', update_product, name='update_product'),
+    path('products/images/<int:id>/', product_images, name='product_images'),
+    path('products/images/delete/<int:id>/', delete_image, name='delete_image'),
+    path('products/delete/<int:id>/', delete_product, name='delete_product'),
+    path('products/images/add/', add_product_images, name='add_product_images'),
+    path('store/<int:vendor_id>/', storefront, name='storefront'),
+    path('upgrade/', upgrade, name='upgrade'),
+    path('api/reset/password/', verify_otp, name='verify_otp'),
+    path('otp/confirm/<uuid:token>/', otp_confirm_view, name='otp_confirm'),
+    path('reset-password/<uuid:token>/', reset_password_page, name='reset_password'),
+]

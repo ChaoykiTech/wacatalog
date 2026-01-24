@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Product - WACatalog</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #ffffff 0%, #e0f7e0 100%); color:#333; min-height:100vh; display:flex; flex-direction:column; }
+    a { text-decoration:none; color:#1e6b3a; }
+
+    .container { max-width:600px; margin:100px auto; padding:20px; }
+
+    h2 { color:#1e6b3a; text-align:center; margin-bottom:30px; }
+
+    form { background: rgba(255,255,255,0.6); padding:25px; border-radius:15px; box-shadow:0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); transition: transform 0.3s, box-shadow 0.3s; }
+    form:hover { transform: translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.15); }
+
+    .form-group { margin-bottom:20px; }
+    .form-group label { display:block; font-weight:600; margin-bottom:8px; color:#228B22; }
+    .form-group input, 
+    .form-group textarea, 
+    .form-group select { width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; background:rgba(255,255,255,0.7); transition:border-color 0.3s; }
+    .form-group input:focus, 
+    .form-group textarea:focus, 
+    .form-group select:focus { border-color:#1e6b3a; outline:none; }
+
+    input[type="file"] { padding:6px; }
+
+    button { display:block; width:100%; background:#1e6b3a; color:white; padding:12px; border:none; border-radius:50px; font-weight:bold; cursor:pointer; margin-top:15px; transition: background 0.3s, transform 0.2s; }
+    button:hover { background:#228B22; transform: translateY(-2px); }
+
+    .back-link { display:block; text-align:center; margin-top:20px; font-weight:bold; color:#1e6b3a; transition: color 0.3s; }
+    .back-link:hover { color:#228B22; }
+
+    @media(max-width:480px){ .container { margin:120px 15px; padding:15px; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Add Product</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <p style="color:#d32f2f; font-size:13px;">{{ field.errors }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <label>Upload Images (select multiple)</label>
+            <input type="file" name="images" multiple required>
+        </div>
+
+        <button type="submit">Add Product</button>
+    </form>
+
+    <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>

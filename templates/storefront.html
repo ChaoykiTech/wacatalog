@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ vendor.business_name }} - WACatalog Store</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+
+/* Header */
+header {
+    background:#1e6b3a;
+    color:#fff;
+    padding:20px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+header .vendor-logo { width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:3px solid #fff; }
+header h1 { margin:5px 0; font-size:24px; }
+header p { margin:3px 0; font-size:14px; }
+header .whatsapp-btn { background:#25D366; padding:10px 15px; border:none; border-radius:8px; color:#fff; font-weight:bold; margin-top:5px; cursor:pointer; text-decoration:none; display:inline-block; }
+header .share-store { margin-top:10px; font-size:14px; }
+header .share-store button { background:#eee; color:#333; border:none; padding:5px 8px; margin:3px; border-radius:5px; cursor:pointer; }
+
+/* ===== FILTER SECTION STYLING ===== */
+
+.search-filter{
+    background:#fff;
+    padding:12px;
+    border-radius:8px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom:15px;
+}
+
+.filter-form{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+}
+
+.filter-group{
+    display:flex;
+    gap:6px;
+}
+
+.filter-group input{
+    padding:8px 10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    font-size:14px;
+    outline:none;
+    transition:all .2s;
+}
+
+.filter-group input:focus{
+    border-color:#1e6b3a;
+}
+
+.price input,
+.date input{
+    width:120px;
+}
+
+.filter-btn{
+    background:#1e6b3a;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* MOBILE FIRST */
+@media(max-width:768px){
+
+.filter-form{
+    flex-direction:column;
+    width:100%;
+}
+
+.filter-group,
+.price,
+.date{
+    width:100%;
+}
+
+.price input,
+.date input,
+.filter-group input{
+    width:100%;
+}
+
+}
+
+/* Product Grid */
+.product-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap:15px; }
+.product-card { background:#fff; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); text-align:center; }
+.product-card img { max-width:180px; max-height:180px; border-radius:5px; object-fit:cover; cursor:pointer; }
+.action-btn { width:100%; margin:4px 0; padding:8px; border:none; border-radius:6px; cursor:pointer; }
+.whatsapp-action { background:#25D366; color:#fff; }
+.order-action { background:#c9a437; color:#fff; }
+.share-buttons { display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-top:5px; }
+
+/* ===== FIXED MODAL GALLERY ===== */
+.modal {
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0; top:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.9);
+}
+
+.modal img {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    max-width:82%;       /* leaves space for arrows */
+    max-height:82%;
+    border-radius:8px;
+    object-fit:contain;
+}
+
+.close-modal {
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:36px;
+    color:#fff;
+    cursor:pointer;
+    z-index:10000;
+}
+
+.nav-btn {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,0.4);
+    border:none;
+    font-size:42px;
+    color:#fff;
+    cursor:pointer;
+    width:40px;
+    height:90px;
+    z-index:10000;
+}
+
+.prev-btn { left:2px; }
+.next-btn { right:2px; }
+
+/* Advert */
+.advert-section { background:#c9a437; padding:20px; margin:30px 0; border-radius:8px; text-align:center; }
+
+/* Footer */
+footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px solid #ccc; }
+
+/* Screenshot Button */
+.screenshot-btn { position:fixed; bottom:20px; right:20px; background:#c9a437; color:#fff; padding:12px 15px; border-radius:50px; font-weight:bold; cursor:pointer; }
+
+/* ===== RESPONSIVE FIXES ONLY ===== */
+
+@media(max-width:768px){
+
+.product-grid {
+    grid-template-columns: repeat(2,1fr);
+}
+
+
+
+/* MOBILE GALLERY PERFECT FIT */
+.modal img{
+    max-width:76%;
+    max-height:78%;
+}
+
+.nav-btn{
+    width:34px;
+    height:70px;
+    font-size:36px;
+}
+}
+
+@media(max-width:480px){
+
+.product-grid {
+    grid-template-columns: 1fr;
+}
+
+.search-filter input{
+    width:100%;
+}
+}
+
+/* --- Floating WhatsApp Support Button --- */
+.whatsapp-float {
+    position: fixed;
+    bottom: 60px;
+    right: 25px;
+    background-color: #25D366;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    z-index: 2000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+}
+
+/* Optional small tooltip */
+.whatsapp-float span {
+    position: absolute;
+    right: 70px;
+    background: #1E6B3A;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.whatsapp-float:hover span {
+    opacity: 1;
+}
+
+.create-store-btn{
+    margin-top: 10px;
+    background: #c9a437;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform .2s ease, background .3s ease;
+}
+
+.create-store-btn:hover{
+    background: #145126;
+    transform: translateY(-2px);
+}
+
+
+</style>
+</head>
+
+<body>
+
+<header>
+{% if vendor.logo %}
+<img src="{{ vendor.logo.url }}" class="vendor-logo">
+{% endif %}
+<h1>{{ vendor.business_name }}</h1>
+<p>{{ vendor.address }}</p>
+
+<a class="whatsapp-btn"
+href="https://api.whatsapp.com/send?phone={{ vendor_phone_digits }}&text={{ prefill_msg_encoded }}"
+target="_blank">
+<i class="fab fa-whatsapp"></i> Contact via WhatsApp
+</a>
+
+<div class="share-store">
+<p>Share this store:</p>
+<button onclick="shareStore('whatsapp')"><i class="fab fa-whatsapp"></i></button>
+<button onclick="shareStore('facebook')"><i class="fab fa-facebook"></i></button>
+<button onclick="shareStore('twitter')"><i class="fab fa-twitter"></i></button>
+<button onclick="shareStore('linkedin')"><i class="fab fa-linkedin"></i></button>
+<button onclick="copyStoreLink()"><i class="fas fa-copy"></i></button>
+</div>
+
+<a href="{% url 'home' %}" class="create-store-btn">
+    🚀 Create Your Own Store on WACatalog
+</a>
+</header>
+
+<div class="search-filter">
+<form method="get" class="filter-form">
+
+<div class="filter-group">
+<input type="text" name="q" placeholder="Search by name..." value="{{ request.GET.q }}">
+</div>
+
+<div class="filter-group price">
+<input type="number" name="min_price" placeholder="Min Price" value="{{ request.GET.min_price }}">
+<input type="number" name="max_price" placeholder="Max Price" value="{{ request.GET.max_price }}">
+</div>
+
+<div class="filter-group date">
+<input type="date" name="start_date" value="{{ request.GET.start_date }}">
+<input type="date" name="end_date" value="{{ request.GET.end_date }}">
+</div>
+
+<div class="filter-group">
+<button type="submit" class="filter-btn">
+<i class="fas fa-search"></i> Filter
+</button>
+</div>
+
+</form>
+</div>
+
+
+<div class="product-grid">
+{% for p in products %}
+<div class="product-card" data-product-id="{{ p.id }}">
+    {% if p.images.all %}
+    <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}" onclick="openGalleryModal({{ p.id }})">
+    {% endif %}
+    <h3>{{ p.name }}</h3>
+    <p><strong>₦{{ p.price }}</strong></p>
+    <p>{{ p.description|truncatechars:100 }}</p>
+    <p><strong>Status:</strong> {{ p.status|title }}</p>
+
+    <!-- Hidden all images -->
+    <div class="all-product-images" style="display:none;">
+        {% for img in p.images.all %}
+        <img src="{{ img.image.url }}">
+        {% endfor %}
+    </div>
+
+    <button class="action-btn order-action"
+    onclick="orderProduct('{{ p.name|escapejs }}','{{ p.price }}','{{ p.description|escapejs }}','{{ vendor_phone_digits }}')">
+    Order Now
+    </button>
+    <button class="action-btn whatsapp-action"
+    onclick="contactVendor('{{ vendor_phone_digits }}','{{ vendor.business_name }}')">
+    Contact Vendor on WhatsApp
+    </button>
+    <p>Share This Product:</p>
+
+    <div class="share-buttons">
+    <button onclick="shareProduct('whatsapp','{{ p.name }}')"><i class="fab fa-whatsapp"></i></button>
+    <button onclick="shareProduct('facebook','{{ p.name }}')"><i class="fab fa-facebook"></i></button>
+    <button onclick="shareProduct('linkedin','{{ p.name }}')"><i class="fab fa-linkedin"></i></button>
+    <button onclick="copyProductLink('{{ p.name }}')"><i class="fas fa-copy"></i></button>
+    </div>
+</div>
+{% endfor %}
+</div>
+
+<div class="advert-section">
+<h3>Create Your Own Store!</h3>
+<p>Join WACatalog today and start your own WhatsApp-Powered Online Store.</p>
+<a href="/register" target="_blank"><button>Create My Store</button></a>
+</div>
+
+</div>
+
+<!-- Screenshot Button -->
+<button class="screenshot-btn" onclick="takeScreenshot()">📸 Snap This Store</button>
+
+<!-- Footer -->
+<footer>
+    <p style="margin:0; font-size:14px; color:#555;">
+        &copy; {{ current_year }} <strong>WACatalog</strong> - Simplifying your online store. <br>
+        Powered by <a href="{% url 'home' %}" target="_blank" style="color:#1e6b3a; text-decoration:none;">WACatalog</a>
+    </p>
+</footer>
+
+
+<!-- Gallery Modal -->
+<div id="galleryModal" class="modal">
+<span class="close-modal" onclick="closeGalleryModal()">&times;</span>
+
+<button class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</button>
+
+<img id="galleryImg" src="">
+
+<button class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</button>
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+let currentImages = [];
+let currentIndex = 0;
+
+function openGalleryModal(productId){
+
+const card = document.querySelector(`[data-product-id='${productId}']`);
+const imgs = card.querySelectorAll('.all-product-images img');
+
+currentImages = Array.from(imgs).map(i => i.src);
+
+if(currentImages.length === 0) return;
+
+currentIndex = 0;
+
+document.getElementById('galleryImg').src = currentImages[0];
+document.getElementById('galleryModal').style.display = 'block';
+}
+
+function changeImage(direction){
+
+if(!currentImages.length) return;
+
+currentIndex += direction;
+
+if(currentIndex < 0)
+    currentIndex = currentImages.length - 1;
+
+if(currentIndex >= currentImages.length)
+    currentIndex = 0;
+
+document.getElementById('galleryImg').src =
+    currentImages[currentIndex];
+}
+
+function closeGalleryModal(){
+document.getElementById('galleryModal').style.display = 'none';
+}
+// Navigate images
+function changeImage(direction){
+    if(!currentImages.length) return;
+    currentIndex += direction;
+    if(currentIndex < 0) currentIndex = currentImages.length - 1;
+    if(currentIndex >= currentImages.length) currentIndex = 0;
+    document.getElementById('galleryImg').src = currentImages[currentIndex];
+}
+
+// Order product
+function orderProduct(name, price, description, phone){
+    const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(
+        `Hello, I want to order this ${name} on WACatalog:\n\nProduct: ${name}\nPrice: ₦${price}\nDescription: ${description}`
+    )}`;
+    window.open(url,'_blank');
+}
+
+// Contact vendor
+function contactVendor(phone, store){
+    const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(
+        `Hello ${store}, I found your store on WACatalog and I’m interested in your products.`
+    )}`;
+    window.open(url,'_blank');
+}
+
+// Share product
+function shareProduct(platform, productName){
+    const url="{{ request.build_absolute_uri }}";
+    const text=`Check out this product on WACatalog: ${productName}\n${url}`;
+    let shareUrl='';
+    switch(platform){
+        case 'whatsapp':
+        case 'whatsapp-business': shareUrl=`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`; break;
+        case 'facebook': shareUrl=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`; break;
+        case 'linkedin': shareUrl=`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}`; break;
+        case 'instagram': alert('Instagram does not support direct web sharing. Link copied instead.'); navigator.clipboard.writeText(`${productName} - ${url}`); return;
+    }
+    window.open(shareUrl,'_blank');
+}
+
+// Copy product link
+function copyProductLink(productName){ const url="{{ request.build_absolute_uri }}"; navigator.clipboard.writeText(`${productName} - ${url}`).then(()=>alert('Product link copied!')); }
+
+// Share store
+function shareStore(platform){
+    const url="{{ request.build_absolute_uri }}";
+    let shareUrl='';
+    if(platform==='whatsapp') shareUrl=`https://api.whatsapp.com/send?text=Check out this store on WACatalog: ${url}`;
+    if(platform==='facebook') shareUrl=`https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    if(platform==='twitter') shareUrl=`https://twitter.com/intent/tweet?url=${url}`;
+    if(platform==='linkedin') shareUrl=`https://www.linkedin.com/shareArticle?mini=true&url=${url}`;
+    window.open(shareUrl,'_blank');
+}
+
+// Copy store link
+function copyStoreLink(){ navigator.clipboard.writeText("{{ request.build_absolute_uri }}").then(()=>alert('Store link copied!')); }
+
+// Screenshot
+function takeScreenshot(){ html2canvas(document.body).then(canvas=>{ const link=document.createElement('a'); link.download='{{ vendor.business_name|slugify }}-store.png'; link.href=canvas.toDataURL(); link.click(); }); }
+</script>
+</body>
+
+<a
+  href="https://api.whatsapp.com/send?phone=2348105622233&text=Hello%20WACatalog%20Support,%20I%20need%20help%20with%20creating%20my%20store."
+  class="whatsapp-float"
+  target="_blank"
+  aria-label="Chat with Support on WhatsApp"
+>
+    💬
+    <span>Chat with Support</span>
+</a>
+
+</html>

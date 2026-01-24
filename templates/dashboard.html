@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Dashboard</title>
+<style>
+/* --- Base Reset & Typography --- */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background: linear-gradient(135deg,#ffffff 0%,#e0f7e0 100%); color:#333; line-height:1.6; display:flex; flex-direction:column; min-height:100vh; overflow-x:hidden; }
+
+/* --- Color Variables --- */
+:root {
+    --primary-green: #228B22;
+    --dark-green: #006400;
+    --light-green: #90EE90;
+    --white: #ffffff;
+    --error-red: #d32f2f;
+    --text-color: #333;
+}
+
+/* --- Glass Card --- */
+.glass { background: rgba(255,255,255,0.6); border-radius:15px; border:1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px); box-shadow:0 8px 32px rgba(0,0,0,0.1); padding:20px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.glass:hover { transform: translateY(-5px); box-shadow:0 12px 40px rgba(0,0,0,0.15); }
+
+/* --- Animations --- */
+@keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+@keyframes slideInLeft { from{opacity:0; transform:translateX(-50px);} to{opacity:1; transform:translateX(0);} }
+.animate-fade { animation:fadeIn 1s ease-out forwards; }
+.animate-left { animation:slideInLeft 1s ease-out forwards; }
+
+/* --- Header --- */
+header { position:fixed; width:100%; top:0; left:0; padding:15px 30px; background:rgba(255,255,255,0.1); backdrop-filter:blur(5px); display:flex; justify-content:space-between; align-items:center; z-index:1000; transition: background 0.3s; }
+header.scrolled { background: rgba(34,139,34,0.3); }
+.logo img { height:70px; width:auto; }
+.user-menu { display:flex; align-items:center; gap:20px; }
+.user-menu span { color:var(--dark-green); font-weight:600; }
+.logout { background:var(--primary-green); color:var(--white); padding:8px 20px; border-radius:50px; text-decoration:none; font-weight:bold; transition: background 0.3s; }
+.logout:hover { background:var(--dark-green); }
+
+/* --- Sidebar --- */
+aside { position:fixed; top:80px; left:0; width:250px; height:calc(100vh - 80px); background: rgba(255,255,255,0.2); backdrop-filter:blur(10px); padding:20px; overflow-y:auto; transition: transform 0.3s ease; z-index:999; }
+aside ul { list-style:none; }
+aside ul li { margin-bottom:15px; }
+aside ul li a { color: var(--dark-green); text-decoration:none; font-size:1.1em; display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; transition: background 0.3s, color 0.3s; }
+aside ul li a:hover, aside ul li a.active { background:var(--light-green); color:var(--dark-green); }
+.menu-toggle { display:none; cursor:pointer; font-size:1.5em; color:var(--dark-green); }
+
+/* --- Main Content --- */
+main { margin-left:250px; padding:100px 30px 30px; flex:1; }
+section { margin-bottom:60px; }
+section h2 { font-size:2.2em; color:var(--dark-green); margin-bottom:30px; }
+
+/* --- Overview Stats --- */
+.overview-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+.stat { text-align:center; }
+.stat h3 { font-size:1.5em; margin-bottom:10px; }
+.stat .number { font-size:2.5em; color:var(--primary-green); }
+
+/* --- Products --- */
+.product-card { display:flex; flex-wrap:wrap; align-items:flex-start; margin-bottom:20px; border-radius:15px; overflow:hidden; }
+.product-card img { max-width:150px; margin-right:15px; border-radius:10px; }
+.product-info { flex:1; min-width:200px; }
+.products-table { width:100%; border-collapse:collapse; margin-top:20px; }
+.products-table th, .products-table td { padding:15px; border-bottom:1px solid #ddd; text-align:left; }
+.products-table th { background:var(--light-green); color:var(--dark-green); }
+
+/* --- Buttons --- */
+button, .btn { cursor:pointer; padding:8px 12px; border:none; border-radius:50px; background:var(--primary-green); color:white; font-weight:bold; transition:background 0.3s; text-decoration:none; }
+button:hover, .btn:hover { background:var(--dark-green); }
+.btn-secondary { background:transparent; border:2px solid var(--primary-green); color:var(--primary-green); }
+.btn-secondary:hover { background:var(--primary-green); color:white; }
+.btn-delete { background:var(--error-red); }
+.btn-delete:hover { background:#b71c1c; }
+
+/* --- Toggle Switch --- */
+.toggle-switch { position:relative; display:inline-block; width:60px; height:34px; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#ccc; transition:.4s; border-radius:34px; }
+.slider:before { position:absolute; content:""; height:26px; width:26px; left:4px; bottom:4px; background-color:white; transition:.4s; border-radius:50%; }
+input:checked + .slider { background-color:var(--primary-green); }
+input:checked + .slider:before { transform:translateX(26px); }
+
+/* --- Form Groups --- */
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark-green); }
+.form-group input, .form-group textarea, .form-group select { width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; background:rgba(255,255,255,0.7); transition:border-color 0.3s; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--primary-green); outline:none; }
+
+/* --- Modals --- */
+.modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.4); }
+.modal-content { background:var(--white); margin:10% auto; padding:20px; border-radius:15px; width:90%; max-width:500px; position:relative; }
+.close { position:absolute; top:10px; right:15px; font-size:28px; font-weight:bold; cursor:pointer; }
+
+/* --- Footer --- */
+footer { padding:30px 20px; text-align:center; background:var(--dark-green); color:var(--white); margin-top:auto; margin-left:250px; }
+
+/* --- Responsive --- */
+@media(max-width:1024px){ aside { transform:translateX(-100%); } aside.active { transform:translateX(0); } main{margin-left:0;} footer{margin-left:0;} .menu-toggle{display:block;} }
+@media(max-width:768px){ .product-card{flex-direction:column;} .product-card img{margin-bottom:10px;} }
+/* Adjust modal to not clash with header */
+.modal-content {
+    margin: 25% auto; /* increased from 10% */
+    padding: 20px;
+}
+
+/* Storefront button in header */
+.btn-storefront {
+    background: #C9A437;       /* blue color */
+    color: white;
+    padding: 6px 15px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 10px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-storefront:hover {
+    background: #1E6B3A;       /* darker blue on hover */
+    transform: translateY(-2px);
+}
+
+/* Optional: make header items align nicely */
+header .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;    /* spacing between name, button, logout */
+}
+
+/* --- Floating WhatsApp Support Button --- */
+.whatsapp-float {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #25D366;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    z-index: 2000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+}
+
+/* Optional small tooltip */
+.whatsapp-float span {
+    position: absolute;
+    right: 70px;
+    background: #1E6B3A;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.whatsapp-float:hover span {
+    opacity: 1;
+}
+
+
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        {% if vendor.logo %}
+            <img src="{{ vendor.logo.url }}" alt="{{ vendor.business_name }}">
+        {% else %}
+            <img src="your-logo.png" alt="Logo">
+        {% endif %}
+    </div>
+    <div class="user-menu">
+        <span>{{ vendor.business_name }}</span>
+        <!-- Storefront Button -->
+        <a href="{% url 'storefront' vendor.slug %}" target="_blank" class="btn-storefront">View Store</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+</header>
+
+<aside>
+    <ul>
+        <li><a href="#overview" class="active">📊 Dashboard</a></li>
+        <li><a href="#products">🛍️ Products</a></li>
+        <li><a href="#add-product">➕ Add Product</a></li>
+        <li><a href="#settings">⚙️ Settings</a></li>
+        <li><a href="#analytics">📈 Analytics</a></li>
+        <li><a href="#orders">📦 Orders</a></li>
+    </ul>
+</aside>
+
+<main>
+    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+
+    <!-- Dashboard Overview -->
+    <section id="overview" class="glass animate-fade">
+        <h2>Dashboard Overview</h2>
+        <div class="overview-grid">
+            <div class="stat glass animate-left">
+                <h3>Total Products</h3>
+                <div class="number">{{ total_products }}</div>
+            </div>
+            <div class="stat glass animate-left" style="animation-delay:0.2s;">
+                <h3>Available</h3>
+                <div class="number">{{ available_count }}</div>
+            </div>
+            <div class="stat glass animate-left" style="animation-delay:0.4s;">
+                <h3>Sold</h3>
+                <div class="number">{{ sold_count }}</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="glass animate-fade" style="display:none;">
+        <h2>Manage Products</h2>
+        {% if products %}
+            {% for p in products %}
+                <div class="product-card glass">
+                    {% if p.images.all %}
+                        <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}">
+                    {% endif %}
+                    <div class="product-info">
+                        <h4>{{ p.name }}</h4>
+                        <p><strong>Price:</strong> ₦{{ p.price }}</p>
+                        <p><strong>Status:</strong> {{ p.status|title }}</p>
+                        <p>{{ p.description }}</p>
+                        <div class="actions">
+                            <button class="btn btn-secondary" onclick="openEditModal({{ p.id }})">Edit</button>
+                            <form method="post" action="{% url 'toggle_product' p.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn">{{ p.status|title }}</button>
+                            </form>
+                            <form method="post" action="{% url 'delete_product' p.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="button" class="btn-delete" onclick="if(confirm('Delete this product?')){ this.closest('form').submit(); }">Delete</button>
+                            </form>
+                            <button class="btn btn-secondary" onclick="openImageModal({{ p.id }})">Manage Images</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No products uploaded yet.</p>
+        {% endif %}
+    </section>
+
+    <!-- Add Product Section -->
+    <section id="add-product" class="glass animate-fade" style="display:none;">
+        <h2>Add New Product</h2>
+        <a href="/products/add/" class="btn">Go to Add Product</a>
+    </section>
+
+    <!-- Account Settings Section -->
+    <section id="settings" class="glass animate-fade" style="display:none;">
+        <h2>Account Settings</h2>
+        <button id="accountBtn" class="btn">Edit Settings</button>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="analytics" class="glass animate-fade" style="display:none;">
+        <h2>Analytics</h2>
+        <h3>Coming Soon</h3>
+        <p>This feature will be available in a future update.</p>
+    </section>
+
+    <!-- Orders Section -->
+    <section id="orders" class="glass animate-fade" style="display:none;">
+        <h2>Orders</h2>
+        <h3>Coming Soon</h3>
+        <p>This feature will be available in a future update.</p>
+    </section>
+</main>
+
+<!-- Account Settings Modal -->
+<div id="accountModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Account Settings</h2>
+        <form method="post" enctype="multipart/form-data" action="{% url 'update_vendor' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Business Name:</label>
+                <input type="text" name="business_name" value="{{ vendor.business_name }}" required>
+            </div>
+            <div class="form-group">
+                <label>Address:</label>
+                <input type="text" name="address" value="{{ vendor.address }}" required>
+            </div>
+            <div class="form-group">
+                <label>Country:</label>
+                <input type="text" name="country" value="{{ vendor.country }}" required>
+            </div>
+            <div class="form-group">
+                <label>Logo:</label>
+                <input type="file" name="logo">
+            </div>
+            <hr>
+            <h3>Change Password</h3>
+            <div class="form-group">
+                <label>New Password:</label>
+                <input type="password" name="new_password">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                <input type="password" name="confirm_password">
+            </div>
+            <button type="submit" class="btn">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="editClose">&times;</span>
+        <h2>Edit Product</h2>
+        <form method="post" id="editProductForm" action="{% url 'update_product' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" id="edit_product_id">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" id="edit_name" required>
+            </div>
+            <div class="form-group">
+                <label>Price:</label>
+                <input type="number" name="price" id="edit_price" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea name="description" id="edit_description"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Status:</label>
+                <select name="status" id="edit_status">
+                    <option value="available">Available</option>
+                    <option value="sold">Sold</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Manage Images Modal -->
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="imageClose">&times;</span>
+        <h2>Manage Product Images</h2>
+        <div id="imageContainer"></div>
+        <form method="post" enctype="multipart/form-data" id="addImageForm" action="{% url 'add_product_images' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" id="image_product_id">
+            <input type="file" name="images" multiple required>
+            <button type="submit" class="btn">Add Images</button>
+        </form>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; {{ current_year }} WACatalog - Simplifying your online store.</p>
+    <p>Powered by <a href="https://wacatalog.com" target="_blank" style="color:var(--white); text-decoration:underline;">WACatalog</a></p>
+</footer>
+
+
+
+<script>
+// Sidebar Toggle
+function toggleSidebar(){ document.querySelector('aside').classList.toggle('active'); }
+// Header Scroll
+window.addEventListener('scroll', ()=>{ document.querySelector('header').classList.toggle('scrolled', window.scrollY>50); });
+// Navigation
+document.querySelectorAll('aside ul li a').forEach(link=>{
+    link.addEventListener('click',(e)=>{
+        e.preventDefault();
+        const targetId=link.getAttribute('href').substring(1);
+        document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+        document.getElementById(targetId).style.display='block';
+        document.querySelectorAll('aside ul li a').forEach(a=>a.classList.remove('active'));
+        link.classList.add('active');
+        if(window.innerWidth<=1024) toggleSidebar();
+    });
+});
+// Initial Load
+document.getElementById('overview').style.display='block';
+
+// Modals
+var accountModal=document.getElementById("accountModal"), accountBtn=document.getElementById("accountBtn"), accountClose=accountModal.querySelector(".close");
+accountBtn.onclick=function(){accountModal.style.display="block";}
+accountClose.onclick=function(){accountModal.style.display="none";}
+window.onclick=function(e){ if(e.target==accountModal){ accountModal.style.display="none"; }}
+
+// Edit Product Modal
+var editModal=document.getElementById("editModal"), editClose=document.getElementById("editClose");
+function openEditModal(productId){
+    fetch(`/products/get/${productId}/`).then(res=>res.json()).then(data=>{
+        document.getElementById('edit_product_id').value=data.id;
+        document.getElementById('edit_name').value=data.name;
+        document.getElementById('edit_price').value=data.price;
+        document.getElementById('edit_description').value=data.description;
+        document.getElementById('edit_status').value=data.status;
+        editModal.style.display="block";
+    });
+}
+editClose.onclick=function(){ editModal.style.display="none"; }
+window.onclick=function(event){ if(event.target==editModal){ editModal.style.display="none"; }}
+
+// Image Modal
+var imageModal=document.getElementById("imageModal"), imageClose=document.getElementById("imageClose");
+function openImageModal(productId){
+    document.getElementById('image_product_id').value=productId;
+    fetch(`/products/images/${productId}/`).then(res=>res.json()).then(data=>{
+        var container=document.getElementById('imageContainer'); container.innerHTML='';
+        data.images.forEach(img=>{
+            var imgEl=document.createElement('div');
+            imgEl.style.display='inline-block'; imgEl.style.margin='5px';
+            imgEl.innerHTML=`<img src="${img.url}" width="100" style="border-radius:8px;"><br><button class="btn-delete" onclick="deleteImage(${img.id})">Delete</button>`;
+            container.appendChild(imgEl);
+        });
+        imageModal.style.display="block";
+    });
+}
+imageClose.onclick=function(){ imageModal.style.display="none"; }
+function deleteImage(id){ fetch(`/products/images/delete/${id}/`).then(()=>openImageModal(document.getElementById('image_product_id').value)); }
+</script>
+
+<a
+  href="https://api.whatsapp.com/send?phone=2348105622233&text=Hello%20WACatalog%20Support,%20I%20need%20help%20with%20my%20vendor%20account."
+  class="whatsapp-float"
+  target="_blank"
+  aria-label="Chat with Support on WhatsApp"
+>
+    💬
+    <span>Chat with Support</span>
+</a>
+
+</body>
+</html>
