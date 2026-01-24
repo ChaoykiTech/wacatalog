@@ -172,7 +172,8 @@ def update_vendor(request):
 
         # Logo upload
         if 'logo' in request.FILES:
-            vendor.logo = request.FILES['logo']
+            vendor.logo.save(request.FILES['logo'].name, request.FILES['logo'], save=False)
+        vendor.save()
 
         # Password change
         new_password = request.POST.get('new_password')

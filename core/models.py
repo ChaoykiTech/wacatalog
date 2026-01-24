@@ -4,7 +4,7 @@ from django.utils.text import slugify
 import uuid
 from datetime import timedelta
 from django.utils import timezone
-
+from cloudinary_storage.storage import MediaCloudinaryStorage
 
 
 
@@ -16,7 +16,12 @@ class Vendor(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     address = models.CharField(max_length=200)
     country = models.CharField(max_length=60)
-    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    logo = models.ImageField(
+        upload_to='logos/',
+        storage=MediaCloudinaryStorage(),
+        blank=True,
+        null=True
+    )
     
     SUBSCRIPTION_CHOICES = (
         ('free', 'Free'),
@@ -79,7 +84,10 @@ class ProductImage(models.Model):
         related_name='images'
     )
 
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(
+        upload_to='products/',
+        storage=MediaCloudinaryStorage()
+    )
 
     def __str__(self):
         return f"Image for {self.product.name}"
