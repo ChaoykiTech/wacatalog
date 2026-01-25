@@ -40,8 +40,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 # Application definition
 
 INSTALLED_APPS = [
-#    'cloudinary',
-#    'cloudinary_storage',
+    'cloudinary',
+    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -146,7 +146,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# In settings.py — add or uncomment this
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 CSRF_TRUSTED_ORIGINS = [
