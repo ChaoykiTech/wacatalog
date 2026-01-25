@@ -34,8 +34,11 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
-
+ALLOWED_HOSTS = [
+    "wacatalog.com",
+    "www.wacatalog.com",
+    "wacatalog.onrender.com",
+]
 
 # Application definition
 
@@ -149,7 +152,11 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://wacatalog.com",
+    "https://www.wacatalog.com",
     "https://wacatalog.onrender.com",
     "https://*.onrender.com",
-    "https://wacatalog.com",
 ]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
