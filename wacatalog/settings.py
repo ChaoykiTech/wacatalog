@@ -141,13 +141,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "core" / "static" / "images"] # Your app static folder
+STATIC_ROOT = str(BASE_DIR / "staticfiles") # where collectstatic will copy files
+STATICFILES_DIRS = [str(BASE_DIR / "static")] # your development static folder
 
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
-
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 CSRF_TRUSTED_ORIGINS = [
     "https://wacatalog.onrender.com",
