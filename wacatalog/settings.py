@@ -141,7 +141,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_URL = "/static/"
-STATIC_ROOT = str(BASE_DIR / "staticfiles") # where collectstatic will copy files
+STATIC_ROOT = None # where collectstatic will copy files
 STATICFILES_DIRS = [str(BASE_DIR / "static")] # your development static folder
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
