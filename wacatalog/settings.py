@@ -147,7 +147,7 @@ STATICFILES_DIRS = [
 ]
 
 # In settings.py — add or uncomment this
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"  # or .CompressedManifestStaticFilesStorage
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 CSRF_TRUSTED_ORIGINS = [
     "https://wacatalog.onrender.com",
