@@ -40,8 +40,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 # Application definition
 
 INSTALLED_APPS = [
-    'cloudinary',
-    'cloudinary_storage',
+#    'cloudinary',
+#    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,7 +147,7 @@ STATICFILES_DIRS = [
 ]
 
 # In settings.py — add or uncomment this
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"  # or .CompressedManifestStaticFilesStorage
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"  # or .CompressedManifestStaticFilesStorage
 
 CSRF_TRUSTED_ORIGINS = [
     "https://wacatalog.onrender.com",
