@@ -152,5 +152,4 @@ CSRF_TRUSTED_ORIGINS = [
     "https://wacatalog.onrender.com",
     "https://*.onrender.com",
     "https://wacatalog.com",
-    "https://*.wacatalog.com",
 ]
