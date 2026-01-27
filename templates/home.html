@@ -184,14 +184,23 @@ font-size:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)
 <body>
 
 <header>
-<div class="nav">
-<div class="logo"><img src="{% static 'images/logo.png' %}" alt="WACatalog Logo"></div>
-<div class="nav-buttons">
-<a href="/login" class="btn btn-outline">Login</a>
-<a href="/register" class="btn btn-green">Create Store</a>
-<a href="#" class="btn btn-outline">Marketplace</a>
-</div>
-</div>
+  <div class="nav">
+    <div class="logo">
+      <img src="{% static 'images/logo.png' %}" alt="WACatalog Logo">
+    </div>
+
+    <div class="nav-buttons">
+      {% if request.user.is_authenticated %}
+        <a href="/dashboard" class="btn btn-green">Dashboard</a>
+        <a href="/logout" class="btn btn-outline">Logout</a>
+        <a href="#" class="btn btn-outline">Marketplace</a>
+      {% else %}
+        <a href="/login" class="btn btn-outline">Login</a>
+        <a href="/register" class="btn btn-green">Create Store</a>
+        <a href="#" class="btn btn-outline">Marketplace</a>
+      {% endif %}
+    </div>
+  </div>
 </header>
 
 <section class="hero">

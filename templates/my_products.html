@@ -75,6 +75,21 @@ h2 { color:#1e6b3a; text-align:center; margin-bottom:25px; }
         <p style="text-align:center; color:#555; margin-top:20px;">No products uploaded yet.</p>
     {% endif %}
 
+    {% if products.has_other_pages %}
+    <div style="margin-top:20px; text-align:center;">
+        {% if products.has_previous %}
+            <a href="?page={{ products.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+
+        <span style="margin:0 10px;">
+            Page {{ products.number }} of {{ products.paginator.num_pages }}
+        </span>
+
+        {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
     <a href="/dashboard" class="back-link">← Back to Dashboard</a>
 </div>
 

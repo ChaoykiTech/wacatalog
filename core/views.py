@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 import random
 from django.contrib.auth.hashers import make_password
 import json
+from django.core.paginator import Paginator
 
 
 
@@ -129,33 +130,47 @@ def login_view(request):
 def dashboard(request):
     vendor = Vendor.objects.get(user=request.user)
 
+
     # Search / filter
     query = request.GET.get('q')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
-    products = Product.objects.filter(vendor=vendor)
-    if query:
-        products = products.filter(name__icontains=query)
-    if start_date:
-        products = products.filter(created_at__gte=start_date)
-    if end_date:
-        products = products.filter(created_at__lte=end_date)
 
-    # Stats
-    total_products = products.count()
-    available_count = products.filter(status='available').count()
-    sold_count = products.filter(status='sold').count()
+    product_qs = Product.objects.filter(vendor=vendor)
+
+
+    if query:
+        product_qs = product_qs.filter(name__icontains=query)
+    if start_date:
+        product_qs = product_qs.filter(created_at__gte=start_date)
+    if end_date:
+        product_qs = product_qs.filter(created_at__lte=end_date)
+
+
+    # 🔹 Stats MUST use QuerySet
+    total_products = product_qs.count()
+    available_count = product_qs.filter(status='available').count()
+    sold_count = product_qs.filter(status='sold').count()
+
+
+    # 🔹 Pagination (display only)
+    paginator = Paginator(product_qs.order_by('-created_at'), 5)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
 
     context = {
-        'vendor': vendor,
-        'products': products,
-        'total_products': total_products,
-        'available_count': available_count,
-        'sold_count': sold_count,
-        'subscription': vendor.subscription,
-        'current_year': datetime.now().year,
+    'vendor': vendor,
+    'products': products, # paginated
+    'total_products': total_products,
+    'available_count': available_count,
+    'sold_count': sold_count,
+    'subscription': vendor.subscription,
+    'current_year': datetime.now().year,
     }
+
+
     return render(request, 'dashboard.html', context)
 
 # -------------------------------
@@ -375,7 +390,11 @@ def add_product(request):
 def my_products(request):
     vendor = Vendor.objects.get(user=request.user)
 
-    products = Product.objects.filter(vendor=vendor)
+    product_list = Product.objects.filter(vendor=vendor).order_by('-created_at')
+    paginator = Paginator(product_list, 6)
+
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
 
     return render(request, 'my_products.html', {
         'products': products
@@ -399,7 +418,10 @@ def normalize_whatsapp_phone(phone):
 # ----------------------------
 def storefront(request, vendor_slug):
     vendor = get_object_or_404(Vendor, slug=vendor_slug)
-    products = Product.objects.filter(vendor=vendor, status='available')
+    products = Product.objects.filter(
+        vendor=vendor,
+        status='available'
+    ).order_by('-created_at')
 
     # Filters
     q = request.GET.get('q')
@@ -424,6 +446,10 @@ def storefront(request, vendor_slug):
     # Prefilled message
     prefill_msg = f"Hello, I am interested in your store: {vendor.business_name}. Please share details."
     prefill_msg_encoded = quote(prefill_msg)  # URL encode properly
+    
+    paginator = Paginator(products, 6) # storefront grid
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
 
     return render(request, 'storefront.html', {
         'vendor': vendor,
@@ -537,3 +563,17 @@ def reset_password_page(request, token):
         return redirect('login')  # Redirect to login page
 
     return render(request, 'reset_password.html', {'token': token})
+
+
+def product_detail(request, vendor_slug, product_slug):
+    vendor = get_object_or_404(Vendor, slug=vendor_slug)
+    product = get_object_or_404(
+        Product,
+        vendor=vendor,
+        slug=product_slug
+    )
+
+    return render(request, 'product_detail.html', {
+        'vendor': vendor,
+        'product': product
+    })

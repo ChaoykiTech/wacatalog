@@ -23,4 +23,6 @@ urlpatterns = [
     path('api/reset/password/', verify_otp, name='verify_otp'),
     path('otp/confirm/<uuid:token>/', otp_confirm_view, name='otp_confirm'),
     path('reset-password/<uuid:token>/', reset_password_page, name='reset_password'),
+    
+    path('store/<slug:vendor_slug>/product/<slug:product_slug>/', product_detail, name='product_detail')
 ]

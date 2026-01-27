@@ -324,6 +324,7 @@ target="_blank">
 <div class="product-grid">
 {% for p in products %}
 <div class="product-card" data-product-id="{{ p.id }}">
+    <a href="{% url 'product_detail' vendor.slug p.slug %}">    
     {% if p.images.all %}
     <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}" onclick="openGalleryModal({{ p.id }})">
     {% endif %}
@@ -338,6 +339,7 @@ target="_blank">
         <img src="{{ img.image.url }}">
         {% endfor %}
     </div>
+    </a>
 
     <button class="action-btn order-action"
     onclick="orderProduct('{{ p.name|escapejs }}','{{ p.price }}','{{ p.description|escapejs }}','{{ vendor_phone_digits }}')">
@@ -358,6 +360,22 @@ target="_blank">
 </div>
 {% endfor %}
 </div>
+
+{% if products.has_other_pages %}
+<div style="text-align:center; margin:30px 0;">
+    {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}" class="btn">Previous</a>
+    {% endif %}
+
+    <span style="margin:0 15px;">
+        Page {{ products.number }} of {{ products.paginator.num_pages }}
+    </span>
+
+    {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}" class="btn">Next</a>
+    {% endif %}
+</div>
+{% endif %}
 
 <div class="advert-section">
 <h3>Create Your Own Store!</h3>

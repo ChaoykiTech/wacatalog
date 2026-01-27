@@ -258,6 +258,22 @@ header .user-menu {
         {% else %}
             <p>No products uploaded yet.</p>
         {% endif %}
+
+        {% if products.has_other_pages %}
+        <div style="margin-top:20px; text-align:center;">
+            {% if products.has_previous %}
+                <a href="?section=products&page={{ products.previous_page_number }}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+
+            <span style="margin:0 10px;">
+                Page {{ products.number }} of {{ products.paginator.num_pages }}
+            </span>
+
+            {% if products.has_next %}
+                <a href="?section=products&page={{ products.next_page_number }}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
     </section>
 
     <!-- Add Product Section -->
@@ -397,7 +413,21 @@ document.querySelectorAll('aside ul li a').forEach(link=>{
     });
 });
 // Initial Load
-document.getElementById('overview').style.display='block';
+// Initial Load (preserve section state)
+const params = new URLSearchParams(window.location.search);
+const section = params.get('section') || 'overview';
+
+document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+
+const activeSection = document.getElementById(section);
+if (activeSection) {
+    activeSection.style.display = 'block';
+}
+
+// Highlight active sidebar link
+document.querySelectorAll('aside ul li a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${section}`);
+});
 
 // Modals
 var accountModal=document.getElementById("accountModal"), accountBtn=document.getElementById("accountBtn"), accountClose=accountModal.querySelector(".close");

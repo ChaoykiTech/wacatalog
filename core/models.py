@@ -57,6 +57,7 @@ class Product(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=180, blank=True, db_index=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
 
@@ -65,13 +66,22 @@ class Product(models.Model):
         ('sold', 'Sold'),
     )
 
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS,
-        default='available'
-    )
-
+    status = models.CharField(max_length=20, choices=STATUS, default='available')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Product.objects.filter(
+                vendor=self.vendor,
+                slug=slug
+            ).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

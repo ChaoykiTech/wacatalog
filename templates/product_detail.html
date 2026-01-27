@@ -1,0 +1,16 @@
+<h1>{{ product.name }}</h1>
+
+<p><strong>Price:</strong> ₦{{ product.price }}</p>
+<p>{{ product.description }}</p>
+
+{% if product.images.all %}
+  <img src="{{ product.images.all.0.image.url }}" width="300">
+{% endif %}
+
+<a
+  href="https://api.whatsapp.com/send?phone=${phone}&text=Hello,%20I%20am%20interested%20in%20{{ product.name }}.%0A%0APrice:%20₦{{ product.price }}%0AProduct%20link:%20{{ request.build_absolute_uri }}"
+  target="_blank"
+  class="btn"
+>
+  Contact on WhatsApp
+</a>
