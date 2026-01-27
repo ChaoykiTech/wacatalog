@@ -5,6 +5,7 @@ import uuid
 from datetime import timedelta
 from django.utils import timezone
 from cloudinary_storage.storage import MediaCloudinaryStorage
+from django.urls import reverse
 
 
 
@@ -75,6 +76,15 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
     views = models.PositiveIntegerField(default=0)
+    
+    def get_absolute_url(self):
+        return reverse(
+            'product_detail',
+            kwargs={
+                'vendor_slug': self.vendor.slug,
+                'product_slug': self.slug
+            }
+        )
 
     STATUS = (
         ('available', 'Available'),

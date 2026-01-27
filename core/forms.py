@@ -44,7 +44,7 @@ class LoginForm(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'description', 'status']
+        fields = ['name', 'category', 'price', 'description', 'status']
 
 
 class ForgotPasswordForm(forms.Form):

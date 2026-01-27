@@ -810,6 +810,23 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
     color:#fff;
 }
 
+
+.view-product-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #1e6b3a;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.view-product-btn:hover {
+    background: #15552d;
+}
+
+
 </style>
 </head>
 
@@ -938,13 +955,14 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
     </div>
     
 
-    <a
-      href="https://api.whatsapp.com/send?phone={{ vendor.phone }}&text=Hello,%20I%20am%20interested%20in%20{{ p.name }}.%0A%0APrice:%20₦{{ p.price }}%0AProduct%20link:%20{{ request.build_absolute_uri }}"
-      target="_blank"
-      class="btn"
-    >
-      Order Now
-    </a>
+<a
+  href="{% url 'product_detail' vendor.slug p.slug %}"
+  class="btn view-product-btn"
+>
+  View Product
+</a>
+
+
     <p>Share This Product:</p>
 
     <div class="share-buttons">
@@ -981,8 +999,7 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
 
 </div>
 
-<!-- Screenshot Button -->
-<button class="screenshot-btn" onclick="takeScreenshot()">📸 Snap This Store</button>
+
 
 <!-- Footer -->
 <footer>
@@ -1052,13 +1069,7 @@ function changeImage(direction){
     document.getElementById('galleryImg').src = currentImages[currentIndex];
 }
 
-// Order product
-function orderProduct(name, price, description, phone){
-    const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(
-        `Hello, I want to order this ${name} on WACatalog:\n\nProduct: ${name}\nPrice: ₦${price}\nDescription: ${description}`
-    )}`;
-    window.open(url,'_blank');
-}
+
 
 // Contact vendor
 function contactVendor(phone, store){

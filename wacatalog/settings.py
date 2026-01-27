@@ -37,7 +37,7 @@ DEBUG = env("DEBUG")
 # ALLOWED_HOSTS = ["*"]
 
 ALLOWED_HOSTS = [
-    "wacatalog.com",
+   "wacatalog.com",
     "www.wacatalog.com",
     "wacatalog.onrender.com",
 ]
