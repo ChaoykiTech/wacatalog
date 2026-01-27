@@ -34,6 +34,12 @@ class Vendor(models.Model):
         choices=SUBSCRIPTION_CHOICES,
         default='free'
     )
+    
+    subscription_started_at = models.DateTimeField(null=True, blank=True)
+    subscription_expires_at = models.DateTimeField(null=True, blank=True)
+
+
+    is_early_vendor = models.BooleanField(default=False) # for badge
 
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -53,13 +59,22 @@ class Vendor(models.Model):
     def __str__(self):
         return self.business_name
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
     name = models.CharField(max_length=150)
     slug = models.SlugField(max_length=180, blank=True, db_index=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
+    views = models.PositiveIntegerField(default=0)
 
     STATUS = (
         ('available', 'Available'),

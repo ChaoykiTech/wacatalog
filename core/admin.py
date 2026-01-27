@@ -10,6 +10,7 @@ from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.utils.html import format_html
 from django.urls import reverse
+from .models import Category
 
 
 # ----------------------------
@@ -151,3 +152,4 @@ admin_site.register(Product, ProductAdmin)
 admin_site.register(Vendor, VendorAdmin)
 admin_site.register(User, UserAdmin)
 admin_site.register(PasswordResetOTP, PasswordResetOTPAdmin)
+admin_site.register(Category)

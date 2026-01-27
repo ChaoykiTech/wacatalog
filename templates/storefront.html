@@ -1,9 +1,17 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ vendor.business_name }} - WACatalog Store</title>
+
+{% if vendor.logo and vendor.logo.url %}
+<link rel="icon" href="{{ vendor.logo.url }}" type="image/png">
+{% else %}
+<link rel="icon" href="{% static 'default_favicon.png' %}" type="image/png">
+{% endif %}
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -268,54 +276,118 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
 <body>
 
 <header>
-{% if vendor.logo %}
-<img src="{{ vendor.logo.url }}" class="vendor-logo">
-{% endif %}
-<h1>{{ vendor.business_name }}</h1>
-<p>{{ vendor.address }}</p>
+    <!-- Vendor Logo -->
+    {% if vendor.logo %}
+        <img src="{{ vendor.logo.url }}" class="vendor-logo" alt="{{ vendor.business_name }} Logo">
+    {% endif %}
 
-<a class="whatsapp-btn"
-href="https://api.whatsapp.com/send?phone={{ vendor_phone_digits }}&text={{ prefill_msg_encoded }}"
-target="_blank">
-<i class="fab fa-whatsapp"></i> Contact via WhatsApp
-</a>
+    <!-- Store Name + Early Vendor Badge -->
+    <h1>
+        {{ vendor.business_name }}
+        {% if vendor.is_early_vendor %}
+            <span class="badge">🌟 Early Vendor</span>
+        {% endif %}
+    </h1>
 
-<div class="share-store">
-<p>Share this store:</p>
-<button onclick="shareStore('whatsapp')"><i class="fab fa-whatsapp"></i></button>
-<button onclick="shareStore('facebook')"><i class="fab fa-facebook"></i></button>
-<button onclick="shareStore('twitter')"><i class="fab fa-twitter"></i></button>
-<button onclick="shareStore('linkedin')"><i class="fab fa-linkedin"></i></button>
-<button onclick="copyStoreLink()"><i class="fas fa-copy"></i></button>
-</div>
+    <!-- Vendor Address -->
+    <p>{{ vendor.address }}</p>
 
-<a href="{% url 'home' %}" class="create-store-btn">
-    🚀 Create Your Own Store on WACatalog
-</a>
+    <!-- WhatsApp Contact -->
+    <a class="whatsapp-btn"
+       href="https://api.whatsapp.com/send?phone={{ vendor_phone_digits }}&text={{ prefill_msg_encoded }}"
+       target="_blank">
+        <i class="fab fa-whatsapp"></i> Contact via WhatsApp
+    </a>
+
+    <!-- Share Store Buttons -->
+    <div class="share-store">
+        <p>Share this store:</p>
+        <button onclick="shareStore('whatsapp')"><i class="fab fa-whatsapp"></i></button>
+        <button onclick="shareStore('facebook')"><i class="fab fa-facebook"></i></button>
+        <button onclick="shareStore('twitter')"><i class="fab fa-twitter"></i></button>
+        <button onclick="shareStore('linkedin')"><i class="fab fa-linkedin"></i></button>
+        <button onclick="copyStoreLink()"><i class="fas fa-copy"></i></button>
+    </div>
+
+    <!-- CTA: Create Your Own Store -->
+    <a href="{% url 'home' %}" class="create-store-btn">
+        🚀 Create Your Own Store on WACatalog
+    </a>
 </header>
 
 <div class="search-filter">
 <form method="get" class="filter-form">
 
-<div class="filter-group">
-<input type="text" name="q" placeholder="Search by name..." value="{{ request.GET.q }}">
-</div>
+    <!-- 🔍 Search -->
+    <div class="filter-group">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search by name..."
+            value="{{ request.GET.q }}">
+    </div>
 
-<div class="filter-group price">
-<input type="number" name="min_price" placeholder="Min Price" value="{{ request.GET.min_price }}">
-<input type="number" name="max_price" placeholder="Max Price" value="{{ request.GET.max_price }}">
-</div>
+    <!-- 💰 Price -->
+    <div class="filter-group price">
+        <input
+            type="number"
+            name="min_price"
+            placeholder="Min Price"
+            value="{{ request.GET.min_price }}">
+        <input
+            type="number"
+            name="max_price"
+            placeholder="Max Price"
+            value="{{ request.GET.max_price }}">
+    </div>
 
-<div class="filter-group date">
-<input type="date" name="start_date" value="{{ request.GET.start_date }}">
-<input type="date" name="end_date" value="{{ request.GET.end_date }}">
-</div>
+    <!-- 📅 Date -->
+    <div class="filter-group date">
+        <input
+            type="date"
+            name="start_date"
+            value="{{ request.GET.start_date }}">
+        <input
+            type="date"
+            name="end_date"
+            value="{{ request.GET.end_date }}">
+    </div>
 
-<div class="filter-group">
-<button type="submit" class="filter-btn">
-<i class="fas fa-search"></i> Filter
-</button>
-</div>
+    <!-- 🗂 Category (NEW, SAFE ADDITION) -->
+    <div class="filter-group">
+        <select name="category">
+            <option value="">All Categories</option>
+            {% for c in categories %}
+                <option value="{{ c.slug }}"
+                    {% if request.GET.category == c.slug %}selected{% endif %}>
+                    {{ c.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- 🔃 Sort (NEW, SAFE ADDITION) -->
+    <div class="filter-group">
+        <select name="sort">
+            <option value="">Newest</option>
+            <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>
+                Oldest
+            </option>
+            <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>
+                Price: Low → High
+            </option>
+            <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>
+                Price: High → Low
+            </option>
+        </select>
+    </div>
+
+    <!-- 🔘 Submit -->
+    <div class="filter-group">
+        <button type="submit" class="filter-btn">
+            <i class="fas fa-search"></i> Filter
+        </button>
+    </div>
 
 </form>
 </div>
@@ -328,7 +400,7 @@ target="_blank">
     {% if p.images.all %}
     <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}" onclick="openGalleryModal({{ p.id }})">
     {% endif %}
-    <h3>{{ p.name }}</h3>
+    <h3>{{ p.name }}</h3></a>
     <p><strong>₦{{ p.price }}</strong></p>
     <p>{{ p.description|truncatechars:100 }}</p>
     <p><strong>Status:</strong> {{ p.status|title }}</p>
@@ -339,7 +411,7 @@ target="_blank">
         <img src="{{ img.image.url }}">
         {% endfor %}
     </div>
-    </a>
+    
 
     <button class="action-btn order-action"
     onclick="orderProduct('{{ p.name|escapejs }}','{{ p.price }}','{{ p.description|escapejs }}','{{ vendor_phone_digits }}')">

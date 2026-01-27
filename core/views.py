@@ -16,6 +16,15 @@ import random
 from django.contrib.auth.hashers import make_password
 import json
 from django.core.paginator import Paginator
+from django.db.models import Sum
+from .models import Category
+from .utils import check_and_downgrade_vendor  # your helper
+from django.utils import timezone
+
+
+
+
+
 
 
 
@@ -129,17 +138,28 @@ def login_view(request):
 @login_required
 def dashboard(request):
     vendor = Vendor.objects.get(user=request.user)
+    
+    # 🔄 Check subscription expiry
+    check_and_downgrade_vendor(vendor)
 
-
-    # Search / filter
+    # 🔹 Search / filter
     query = request.GET.get('q')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
+    # All products for dashboard
+    all_products = Product.objects.filter(vendor=vendor).order_by('-created_at')
 
-    product_qs = Product.objects.filter(vendor=vendor)
+    # 🔒 Lock products if vendor is free
+    if vendor.subscription == 'free':
+        unlocked_products = all_products[:5]
+        locked_products = all_products[5:]
+    else:
+        unlocked_products = all_products
+        locked_products = []
 
-
+    # Apply search & date filters for stats / pagination
+    product_qs = all_products
     if query:
         product_qs = product_qs.filter(name__icontains=query)
     if start_date:
@@ -147,29 +167,36 @@ def dashboard(request):
     if end_date:
         product_qs = product_qs.filter(created_at__lte=end_date)
 
-
-    # 🔹 Stats MUST use QuerySet
+    # 🔹 Stats
     total_products = product_qs.count()
     available_count = product_qs.filter(status='available').count()
     sold_count = product_qs.filter(status='sold').count()
-
+    total_views = Product.objects.filter(vendor=vendor).aggregate(total=Sum('views'))['total'] or 0
 
     # 🔹 Pagination (display only)
     paginator = Paginator(product_qs.order_by('-created_at'), 5)
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
+    # 🔹 3-day expiry countdown
+    days_left = None
+    if vendor.subscription_expires_at:
+        delta = vendor.subscription_expires_at - timezone.now()
+        days_left = delta.days
 
     context = {
-    'vendor': vendor,
-    'products': products, # paginated
-    'total_products': total_products,
-    'available_count': available_count,
-    'sold_count': sold_count,
-    'subscription': vendor.subscription,
-    'current_year': datetime.now().year,
+        'vendor': vendor,
+        'products': products,  # paginated for dashboard table
+        'unlocked_products': unlocked_products,
+        'locked_products': locked_products,
+        'total_products': total_products,
+        'available_count': available_count,
+        'sold_count': sold_count,
+        'subscription': vendor.subscription,
+        'current_year': datetime.now().year,
+        'total_views': total_views,
+        'days_left': days_left,
     }
-
 
     return render(request, 'dashboard.html', context)
 
@@ -418,16 +445,21 @@ def normalize_whatsapp_phone(phone):
 # ----------------------------
 def storefront(request, vendor_slug):
     vendor = get_object_or_404(Vendor, slug=vendor_slug)
+    check_and_downgrade_vendor(vendor)
+
     products = Product.objects.filter(
         vendor=vendor,
         status='available'
-    ).order_by('-created_at')
+    )
 
     # Filters
     q = request.GET.get('q')
     if q:
         products = products.filter(name__icontains=q)
     min_price = request.GET.get('min_price')
+    category_slug = request.GET.get('category')
+    if category_slug:
+        products = products.filter(category__slug=category_slug)
     if min_price:
         products = products.filter(price__gte=min_price)
     max_price = request.GET.get('max_price')
@@ -439,6 +471,20 @@ def storefront(request, vendor_slug):
     end_date = request.GET.get('end_date')
     if end_date:
         products = products.filter(created_at__date__lte=end_date)
+        
+    sort = request.GET.get('sort')
+
+    if sort == 'price_low':
+        products = products.order_by('price')
+    elif sort == 'price_high':
+        products = products.order_by('-price')
+    elif sort == 'oldest':
+        products = products.order_by('created_at')
+    else:
+        products = products.order_by('-created_at')  # newest default
+        
+    if vendor.subscription == 'free':
+        products = products[:5]
 
     # WhatsApp phone normalization
     vendor_phone_digits = normalize_whatsapp_phone(vendor.phone)
@@ -451,9 +497,11 @@ def storefront(request, vendor_slug):
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
+    categories = Category.objects.all()
     return render(request, 'storefront.html', {
         'vendor': vendor,
         'products': products,
+        'categories': categories,
         'current_year': datetime.now().year,
         'prefill_msg_encoded': prefill_msg_encoded,
         'vendor_phone_digits': vendor_phone_digits
@@ -567,11 +615,16 @@ def reset_password_page(request, token):
 
 def product_detail(request, vendor_slug, product_slug):
     vendor = get_object_or_404(Vendor, slug=vendor_slug)
-    product = get_object_or_404(
-        Product,
-        vendor=vendor,
-        slug=product_slug
-    )
+    product = get_object_or_404(Product, vendor=vendor, slug=product_slug)
+
+    # Only count views for Basic & Pro
+    if vendor.subscription in ['basic', 'pro']:
+        session_key = f'viewed_product_{product.id}'
+
+        if not request.session.get(session_key):
+            product.views += 1
+            product.save(update_fields=['views'])
+            request.session[session_key] = True
 
     return render(request, 'product_detail.html', {
         'vendor': vendor,

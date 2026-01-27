@@ -35,11 +35,12 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 # ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = [
-    "wacatalog.com",
-    "www.wacatalog.com",
-    "wacatalog.onrender.com",
-]
+ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = [
+#    "wacatalog.com",
+#    "www.wacatalog.com",
+#    "wacatalog.onrender.com",
+#]
 
 # Application definition
 

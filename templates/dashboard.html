@@ -172,6 +172,129 @@ header .user-menu {
     opacity: 1;
 }
 
+/* Wrapper */
+.views-gate {
+    margin-top: 10px;
+    position: relative;
+    width: fit-content;
+    font-size: 13px;
+}
+
+/* UNLOCKED */
+.views-unlocked {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #1e6b3a;
+    font-weight: 600;
+}
+
+.views-unlocked .eye {
+    font-size: 15px;
+}
+
+/* LOCKED */
+.views-locked {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f3f3f3, #eaeaea);
+    color: #777;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s ease;
+}
+
+/* Hover micro-interaction */
+.views-locked:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* Tooltip */
+.views-locked .tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateX(-50%) translateY(6px);
+}
+
+.views-locked:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+
+.upgrade-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.upgrade-modal.active {
+    display: flex;
+}
+
+.modal-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    max-width: 360px;
+    text-align: center;
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.modal-box h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.modal-box p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 18px;
+}
+
+.upgrade-btn {
+    display: inline-block;
+    background: #1e6b3a;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.close-modal {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+}
+
+
 
 </style>
 </head>
@@ -209,6 +332,14 @@ header .user-menu {
 
     <!-- Dashboard Overview -->
     <section id="overview" class="glass animate-fade">
+        <!-- 3-day expiry countdown -->
+        {% if days_left != None and days_left <= 3 and days_left >= 0 %}
+        <div class="alert warning">
+            ⏰ Your subscription expires in {{ days_left }} day{{ days_left|pluralize }}.
+            <a href="/upgrade">Upgrade now</a>
+        </div>
+        {% endif %}
+        
         <h2>Dashboard Overview</h2>
         <div class="overview-grid">
             <div class="stat glass animate-left">
@@ -223,58 +354,102 @@ header .user-menu {
                 <h3>Sold</h3>
                 <div class="number">{{ sold_count }}</div>
             </div>
+        <div class="views-gate">
+    {% if vendor.subscription != 'free' %}
+        <div class="views-unlocked">
+            <span class="eye">👁</span>
+            <span class="number">{{ total_views }}</span>
+            <span class="label">store views</span>
+        </div>
+    {% else %}
+        <div class="views-locked" id="upgradeTrigger">
+            <span class="lock">🔒</span>
+            <span class="label">Views hidden</span>
+
+            <div class="tooltip">
+                Upgrade your plan to unlock store analytics
+            </div>
+        </div>
+    {% endif %}
+</div>
+
         </div>
     </section>
 
     <!-- Products Section -->
     <section id="products" class="glass animate-fade" style="display:none;">
-        <h2>Manage Products</h2>
-        {% if products %}
-            {% for p in products %}
-                <div class="product-card glass">
-                    {% if p.images.all %}
-                        <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}">
-                    {% endif %}
-                    <div class="product-info">
-                        <h4>{{ p.name }}</h4>
-                        <p><strong>Price:</strong> ₦{{ p.price }}</p>
-                        <p><strong>Status:</strong> {{ p.status|title }}</p>
-                        <p>{{ p.description }}</p>
-                        <div class="actions">
-                            <button class="btn btn-secondary" onclick="openEditModal({{ p.id }})">Edit</button>
-                            <form method="post" action="{% url 'toggle_product' p.id %}" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn">{{ p.status|title }}</button>
-                            </form>
-                            <form method="post" action="{% url 'delete_product' p.id %}" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="button" class="btn-delete" onclick="if(confirm('Delete this product?')){ this.closest('form').submit(); }">Delete</button>
-                            </form>
-                            <button class="btn btn-secondary" onclick="openImageModal({{ p.id }})">Manage Images</button>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No products uploaded yet.</p>
+    <h2>Manage Products</h2>
+
+    <!-- Unlocked products -->
+    {% for p in unlocked_products %}
+    <div class="product-card glass">
+        {% if p.images.all %}
+            <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}">
         {% endif %}
-
-        {% if products.has_other_pages %}
-        <div style="margin-top:20px; text-align:center;">
-            {% if products.has_previous %}
-                <a href="?section=products&page={{ products.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        <div class="product-info">
+            <h4>{{ p.name }}</h4>
+            <p><strong>Price:</strong> ₦{{ p.price }}</p>
+            <p><strong>Status:</strong> {{ p.status|title }}</p>
+            {% if vendor.subscription != 'free' %}
+            <small style="color:#666; font-size:12px;">
+                👀 {{ p.views }} views
+            </small>
+            {% else %}
+            <small style="color:#aaa; font-size:12px;">
+                🔒 Upgrade to see views
+            </small>
             {% endif %}
-
-            <span style="margin:0 10px;">
-                Page {{ products.number }} of {{ products.paginator.num_pages }}
-            </span>
-
-            {% if products.has_next %}
-                <a href="?section=products&page={{ products.next_page_number }}" class="btn btn-secondary">Next</a>
-            {% endif %}
+            <p>{{ p.description }}</p>
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="openEditModal({{ p.id }})">Edit</button>
+                <form method="post" action="{% url 'toggle_product' p.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">{{ p.status|title }}</button>
+                </form>
+                <form method="post" action="{% url 'delete_product' p.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="button" class="btn-delete" onclick="if(confirm('Delete this product?')){ this.closest('form').submit(); }">Delete</button>
+                </form>
+                <button class="btn btn-secondary" onclick="openImageModal({{ p.id }})">Manage Images</button>
+            </div>
         </div>
+    </div>
+    {% endfor %}
+
+    <!-- Locked products -->
+    {% for p in locked_products %}
+    <div class="product-card glass locked">
+        {% if p.images.all %}
+            <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}">
         {% endif %}
-    </section>
+        <div class="product-info">
+            <h4>{{ p.name }}</h4>
+            <p><strong>Price:</strong> ₦{{ p.price }}</p>
+            <p><strong>Status:</strong> {{ p.status|title }}</p>
+            <small style="color:#aaa; font-size:12px;">
+                🔒 Locked — Upgrade to manage
+            </small>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Pagination -->
+    {% if products.has_other_pages %}
+    <div style="margin-top:20px; text-align:center;">
+        {% if products.has_previous %}
+            <a href="?section=products&page={{ products.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+
+        <span style="margin:0 10px;">
+            Page {{ products.number }} of {{ products.paginator.num_pages }}
+        </span>
+
+        {% if products.has_next %}
+            <a href="?section=products&page={{ products.next_page_number }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
 
     <!-- Add Product Section -->
     <section id="add-product" class="glass animate-fade" style="display:none;">
@@ -302,6 +477,22 @@ header .user-menu {
         <p>This feature will be available in a future update.</p>
     </section>
 </main>
+
+<div class="upgrade-modal" id="upgradeModal">
+    <div class="modal-box">
+        <h3>Unlock Store Insights 🔓</h3>
+        <p>
+            See how many people view your store, track performance,
+            and grow faster with analytics.
+        </p>
+
+        <a href="{% url 'upgrade' %}" class="upgrade-btn">
+            Upgrade Now
+        </a>
+
+        <span class="close-modal" id="closeUpgrade">Not now</span>
+    </div>
+</div>
 
 <!-- Account Settings Modal -->
 <div id="accountModal" class="modal">
@@ -467,6 +658,22 @@ function openImageModal(productId){
 }
 imageClose.onclick=function(){ imageModal.style.display="none"; }
 function deleteImage(id){ fetch(`/products/images/delete/${id}/`).then(()=>openImageModal(document.getElementById('image_product_id').value)); }
+
+
+const trigger = document.getElementById('upgradeTrigger');
+const modal = document.getElementById('upgradeModal');
+const close = document.getElementById('closeUpgrade');
+
+if (trigger) {
+    trigger.addEventListener('click', () => {
+        modal.classList.add('active');
+    });
+}
+
+close.addEventListener('click', () => {
+    modal.classList.remove('active');
+});
+
 </script>
 
 <a
