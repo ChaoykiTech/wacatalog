@@ -583,7 +583,7 @@ header p{
 }
 
 /* ===============================
-   RESPONSIVE GRID
+   RESPONSIVE GRID FIXED
 ================================ */
 
 /* Tablets */
@@ -593,21 +593,21 @@ header p{
     }
 }
 
-/* Mobile */
+/* Mobile (2 per row) */
 @media (max-width: 600px) {
     .product-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 per row */
+        grid-template-columns: repeat(2, 1fr); /* ✅ 2 per row */
         gap: 1rem;
         margin: 1rem auto;
     }
 
-    .product-card img {
-        height: 140px;
+    .product-card {
+        width: auto; /* remove any max-width forcing full row */
+        padding: 0.8rem;
     }
 
-    .action-btn {
-        padding: 6px 10px;
-        font-size: 0.8rem;
+    .product-card img {
+        height: 140px;
     }
 
     .product-card h3 {
@@ -617,7 +617,13 @@ header p{
     .product-card p {
         font-size: 0.75rem;
     }
+
+    .action-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
 }
+
 
 /* ===== FIXED MODAL GALLERY ===== */
 .modal {
@@ -701,9 +707,7 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
 
 @media(max-width:480px){
 
-.product-grid {
-    grid-template-columns: 1fr;
-}
+
 
 .search-filter input{
     width:100%;
@@ -772,6 +776,39 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
     transform: translateY(-2px);
 }
 
+/* ---------- BUTTONS ---------- */
+.btn {
+    display:inline-block;
+    margin:12px 6px;
+    padding:10px 18px;
+    font-weight:700;
+    font-size:0.95rem;
+    color:#fff;
+    background:linear-gradient(135deg, #25d366, #1ebe57);
+    border:none;
+    border-radius:12px;
+    text-decoration:none;
+    cursor:pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow:0 6px 20px rgba(37,211,102,0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow:0 12px 28px rgba(37,211,102,0.4);
+}
+
+.back-btn {
+    display:inline-block;
+    background:#c9a437;
+    color:#000;
+    margin-bottom:1rem;
+}
+
+.back-btn:hover {
+    background:#145126;
+    color:#fff;
+}
 
 </style>
 </head>
@@ -883,10 +920,11 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
 <div class="product-grid">
 {% for p in products %}
 <div class="product-card" data-product-id="{{ p.id }}">
-    <a href="{% url 'product_detail' vendor.slug p.slug %}">    
+        
     {% if p.images.all %}
     <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}" onclick="openGalleryModal({{ p.id }})">
     {% endif %}
+    <a href="{% url 'product_detail' vendor.slug p.slug %}">
     <h3>{{ p.name }}</h3></a>
     <p><strong>₦{{ p.price }}</strong></p>
     <p>{{ p.description|truncatechars:100 }}</p>
@@ -900,14 +938,13 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
     </div>
     
 
-    <button class="action-btn order-action"
-    onclick="orderProduct('{{ p.name|escapejs }}','{{ p.price }}','{{ p.description|escapejs }}','{{ vendor_phone_digits }}')">
-    Order Now
-    </button>
-    <button class="action-btn whatsapp-action"
-    onclick="contactVendor('{{ vendor_phone_digits }}','{{ vendor.business_name }}')">
-    Contact Vendor on WhatsApp
-    </button>
+    <a
+      href="https://api.whatsapp.com/send?phone={{ vendor.phone }}&text=Hello,%20I%20am%20interested%20in%20{{ p.name }}.%0A%0APrice:%20₦{{ p.price }}%0AProduct%20link:%20{{ request.build_absolute_uri }}"
+      target="_blank"
+      class="btn"
+    >
+      Order Now
+    </a>
     <p>Share This Product:</p>
 
     <div class="share-buttons">

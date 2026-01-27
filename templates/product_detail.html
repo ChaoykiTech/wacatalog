@@ -1,5 +1,11 @@
 {% load static %}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ product.name }} | {{ vendor.business_name }}</title>
 
 {% if vendor.logo and vendor.logo.url %}
 <link rel="icon" href="{{ vendor.logo.url }}" type="image/png">
@@ -7,19 +13,178 @@
 <link rel="icon" href="{% static 'default_favicon.png' %}" type="image/png">
 {% endif %}
 
-<h1>{{ product.name }}</h1>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    background:#f9f9f9;
+}
 
-<p><strong>Price:</strong> ₦{{ product.price }}</p>
-<p>{{ product.description }}</p>
+/* ---------- VENDOR HEADER ---------- */
+.vendor-header {
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:20px;
+    background: linear-gradient(135deg, #1e6b3a, #145126);
+    color:#fff;
+    text-align:left;
+}
 
-{% if product.images.all %}
-  <img src="{{ product.images.all.0.image.url }}" width="300">
-{% endif %}
+.vendor-header img {
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid rgba(255,255,255,0.9);
+    box-shadow:0 6px 18px rgba(0,0,0,0.35);
+}
 
-<a
-  href="https://api.whatsapp.com/send?phone=${phone}&text=Hello,%20I%20am%20interested%20in%20{{ product.name }}.%0A%0APrice:%20₦{{ product.price }}%0AProduct%20link:%20{{ request.build_absolute_uri }}"
-  target="_blank"
-  class="btn"
->
-  Contact on WhatsApp
-</a>
+.vendor-header h2 {
+    margin:0;
+    font-size:1.5rem;
+}
+
+.vendor-header .badge {
+    display:inline-block;
+    background:#c9a437;
+    color:#000;
+    font-weight:700;
+    font-size:0.8rem;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-top:4px;
+}
+
+/* ---------- PRODUCT DETAIL CARD ---------- */
+.product-detail {
+    max-width:700px;
+    margin:2rem auto;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.25);
+    box-shadow:0 8px 28px rgba(0,0,0,0.2);
+    padding:2rem;
+    text-align:center;
+}
+
+.product-detail img {
+    max-width:100%;
+    height:auto;
+    border-radius:12px;
+    margin-bottom:1rem;
+}
+
+.product-detail h1 {
+    font-size:1.8rem;
+    color:#1e6b3a;
+    margin-bottom:0.5rem;
+}
+
+.product-detail p {
+    font-size:1rem;
+    margin:0.4rem 0;
+    color:#333;
+}
+
+.product-detail strong {
+    color:#c9a437;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn {
+    display:inline-block;
+    margin:12px 6px;
+    padding:10px 18px;
+    font-weight:700;
+    font-size:0.95rem;
+    color:#fff;
+    background:linear-gradient(135deg, #25d366, #1ebe57);
+    border:none;
+    border-radius:12px;
+    text-decoration:none;
+    cursor:pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow:0 6px 20px rgba(37,211,102,0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow:0 12px 28px rgba(37,211,102,0.4);
+}
+
+.back-btn {
+    display:inline-block;
+    background:#c9a437;
+    color:#000;
+    margin-bottom:1rem;
+}
+
+.back-btn:hover {
+    background:#145126;
+    color:#fff;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:768px){
+    .vendor-header {
+        flex-direction: column;
+        align-items:center;
+        text-align:center;
+        gap:8px;
+    }
+    .vendor-header h2 { font-size:1.3rem; }
+    .vendor-header img { width:70px; height:70px; }
+}
+
+@media(max-width:480px){
+    .product-detail { padding:1rem; }
+    .product-detail h1 { font-size:1.5rem; }
+    .btn { font-size:0.85rem; padding:8px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- BACK BUTTON -->
+<div style="max-width:700px; margin:1rem auto; text-align:left;">
+    <button class="btn back-btn" onclick="history.back()">← Back</button>
+</div>
+
+<!-- VENDOR HEADER -->
+<div class="vendor-header">
+    {% if vendor.logo %}
+        <img src="{{ vendor.logo.url }}" alt="{{ vendor.business_name }}">
+    {% endif %}
+    <div>
+        <h2>{{ vendor.business_name }}</h2>
+        {% if vendor.badge %}
+            <span class="badge">{{ vendor.badge }}</span>
+        {% endif %}
+    </div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div class="product-detail">
+    <h1>{{ product.name }}</h1>
+    <p><strong>Price:</strong> ₦{{ product.price }}</p>
+    <p>{{ product.description }}</p>
+
+    {% if product.images.all %}
+        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+
+    <a
+      href="https://api.whatsapp.com/send?phone={{ vendor.phone }}&text=Hello,%20I%20am%20interested%20in%20{{ product.name }}.%0A%0APrice:%20₦{{ product.price }}%0AProduct%20link:%20{{ request.build_absolute_uri }}"
+      target="_blank"
+      class="btn"
+    >
+      Contact on WhatsApp
+    </a>
+</div>
+
+</body>
+</html>
