@@ -141,6 +141,8 @@ def dashboard(request):
     
     # 🔄 Check subscription expiry
     check_and_downgrade_vendor(vendor)
+    
+    categories = Category.objects.all()  # ✅ ADD THIS
 
     # 🔹 Search / filter
     query = request.GET.get('q')
@@ -186,6 +188,7 @@ def dashboard(request):
 
     context = {
         'vendor': vendor,
+        'categories': categories,  # ✅ THIS IS THE FIX
         'products': products,  # paginated for dashboard table
         'unlocked_products': unlocked_products,
         'locked_products': locked_products,
@@ -211,6 +214,13 @@ def update_vendor(request):
         vendor.business_name = request.POST.get('business_name')
         vendor.address = request.POST.get('address')
         vendor.country = request.POST.get('country')
+        
+        category_id = request.POST.get('category')
+
+        if category_id and category_id.isdigit():
+            vendor.category = get_object_or_404(Category, id=category_id)
+        else:
+            vendor.category = None
 
         # Logo upload
         if 'logo' in request.FILES:

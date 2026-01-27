@@ -339,7 +339,7 @@ header .user-menu {
             <a href="/upgrade">Upgrade now</a>
         </div>
         {% endif %}
-        
+
         <h2>Dashboard Overview</h2>
         <div class="overview-grid">
             <div class="stat glass animate-left">
@@ -505,6 +505,19 @@ header .user-menu {
                 <label>Business Name:</label>
                 <input type="text" name="business_name" value="{{ vendor.business_name }}" required>
             </div>
+            <select name="category">
+                <option value="">Select category</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}"
+                        {% if vendor.category and vendor.category.id == cat.id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
             <div class="form-group">
                 <label>Address:</label>
                 <input type="text" name="address" value="{{ vendor.address }}" required>

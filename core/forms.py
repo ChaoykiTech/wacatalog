@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Vendor
-from .models import Product
+from .models import Product, Category
 
 
 class RegisterForm(forms.Form):
@@ -15,6 +15,10 @@ class RegisterForm(forms.Form):
 
     username = forms.CharField()
     business_name = forms.CharField()
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        required=False
+    )
     address = forms.CharField()
     country = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)

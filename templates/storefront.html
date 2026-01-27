@@ -846,6 +846,11 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
         {% endif %}
     </h1>
 
+        {% if vendor.category %}
+            <p class="vendor-category">{{ vendor.category.name }}</p>
+        {% endif %}
+
+
     <!-- Vendor Address -->
     <p>{{ vendor.address }}</p>
 
