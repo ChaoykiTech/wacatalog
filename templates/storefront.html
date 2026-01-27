@@ -937,11 +937,11 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
 <div class="product-grid">
 {% for p in products %}
 <div class="product-card" data-product-id="{{ p.id }}">
-        
+    <a href="{% url 'product_detail' vendor.slug p.slug %}">    
     {% if p.images.all %}
     <img src="{{ p.images.all.0.image.url }}" alt="{{ p.name }}" onclick="openGalleryModal({{ p.id }})">
     {% endif %}
-    <a href="{% url 'product_detail' vendor.slug p.slug %}">
+    
     <h3>{{ p.name }}</h3></a>
     <p><strong>₦{{ p.price }}</strong></p>
     <p>{{ p.description|truncatechars:100 }}</p>
