@@ -17,104 +17,607 @@
 <style>
 body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
 
-/* Header */
-header {
-    background:#1e6b3a;
-    color:#fff;
-    padding:20px;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+/* ===================== MODERN STOREFRONT HEADER ===================== */
+
+header{
+    position: relative;
+    padding: 40px 20px 48px;
+    text-align: center;
+    color: #fff;
+    background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 40%),
+        linear-gradient(135deg, #1e6b3a, #145126);
+    overflow: hidden;
 }
-header .vendor-logo { width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:3px solid #fff; }
-header h1 { margin:5px 0; font-size:24px; }
-header p { margin:3px 0; font-size:14px; }
-header .whatsapp-btn { background:#25D366; padding:10px 15px; border:none; border-radius:8px; color:#fff; font-weight:bold; margin-top:5px; cursor:pointer; text-decoration:none; display:inline-block; }
-header .share-store { margin-top:10px; font-size:14px; }
-header .share-store button { background:#eee; color:#333; border:none; padding:5px 8px; margin:3px; border-radius:5px; cursor:pointer; }
 
-/* ===== FILTER SECTION STYLING ===== */
+/* subtle decorative glow */
+header::after{
+    content:"";
+    position:absolute;
+    inset:auto -40% -60% -40%;
+    height:300px;
+    background: radial-gradient(circle, rgba(201,164,55,0.25), transparent 70%);
+    pointer-events:none;
+}
 
-.search-filter{
+/* Vendor Logo */
+.vendor-logo{
+    width:110px;
+    height:110px;
+    object-fit:cover;
+    border-radius:50%;
+    border:4px solid rgba(255,255,255,0.9);
+    box-shadow:0 15px 35px rgba(0,0,0,0.35);
+    margin-bottom:12px;
     background:#fff;
-    padding:12px;
-    border-radius:8px;
-    box-shadow:0 1px 4px rgba(0,0,0,0.08);
-    margin-bottom:15px;
 }
 
-.filter-form{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:center;
+/* Store Name */
+header h1{
+    font-size:28px;
+    font-weight:800;
+    margin:6px 0 4px;
+    letter-spacing:.3px;
 }
 
-.filter-group{
-    display:flex;
-    gap:6px;
+/* Badge */
+.badge{
+    display:inline-block;
+    margin-top:6px;
+    background:#c9a437;
+    color:#000;
+    font-size:12px;
+    font-weight:700;
+    padding:5px 12px;
+    border-radius:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25);
 }
 
-.filter-group input{
-    padding:8px 10px;
-    border:1px solid #ddd;
-    border-radius:6px;
+/* Address */
+header p{
+    margin:8px 0 16px;
     font-size:14px;
-    outline:none;
-    transition:all .2s;
+    opacity:.95;
 }
 
-.filter-group input:focus{
-    border-color:#1e6b3a;
-}
-
-.price input,
-.date input{
-    width:120px;
-}
-
-.filter-btn{
-    background:#1e6b3a;
+/* WhatsApp CTA */
+.whatsapp-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#25D366;
     color:#fff;
+    padding:12px 22px;
+    border-radius:40px;
+    font-weight:700;
+    text-decoration:none;
+    box-shadow:0 10px 28px rgba(0,0,0,0.35);
+    transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.whatsapp-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 40px rgba(0,0,0,0.45);
+}
+
+/* Share Store */
+.share-store{
+    margin-top:22px;
+}
+
+.share-store p{
+    font-size:13px;
+    margin-bottom:6px;
+    opacity:.9;
+}
+
+.share-store button{
+    background:rgba(255,255,255,0.92);
+    color:#333;
     border:none;
-    padding:8px 14px;
-    border-radius:6px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    margin:3px;
     cursor:pointer;
-    font-weight:bold;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25);
+    transition:transform .2s ease, background .2s ease;
 }
 
-/* MOBILE FIRST */
-@media(max-width:768px){
-
-.filter-form{
-    flex-direction:column;
-    width:100%;
+.share-store button:hover{
+    transform:translateY(-2px);
+    background:#fff;
 }
 
-.filter-group,
-.price,
-.date{
-    width:100%;
+/* Create Store CTA */
+.create-store-btn{
+    display:inline-block;
+    margin-top:22px;
+    background:linear-gradient(135deg, #c9a437, #e0c15a);
+    color:#000;
+    padding:12px 26px;
+    border-radius:40px;
+    font-weight:800;
+    font-size:14px;
+    text-decoration:none;
+    box-shadow:0 12px 30px rgba(0,0,0,0.35);
+    transition:transform .25s ease, box-shadow .25s ease;
 }
 
-.price input,
-.date input,
-.filter-group input{
-    width:100%;
+.create-store-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.45);
 }
 
+/* Mobile polish */
+@media(max-width:480px){
+    header h1{font-size:24px}
+    .vendor-logo{width:96px;height:96px}
 }
 
-/* Product Grid */
-.product-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap:15px; }
-.product-card { background:#fff; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); text-align:center; }
-.product-card img { max-width:180px; max-height:180px; border-radius:5px; object-fit:cover; cursor:pointer; }
-.action-btn { width:100%; margin:4px 0; padding:8px; border:none; border-radius:6px; cursor:pointer; }
-.whatsapp-action { background:#25D366; color:#fff; }
-.order-action { background:#c9a437; color:#fff; }
-.share-buttons { display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-top:5px; }
+/* ===============================
+   SEARCH & FILTER BAR (GLASS UI)
+================================ */
+
+.search-filter {
+    margin: 2.5rem auto;
+    padding: 1.5rem;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+}
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Generic group */
+.filter-group {
+    display: flex;
+    gap: 0.6rem;
+    flex: 1 1 160px;
+}
+
+/* Inputs & selects */
+.filter-group input,
+.filter-group select {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.85);
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.15);
+}
+
+/* Price & date groups tighter */
+.filter-group.price,
+.filter-group.date {
+    flex: 1 1 220px;
+}
+
+/* Filter button */
+.filter-btn {
+    padding: 0.7rem 1.4rem;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #25d366, #1ebe57);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 12px 25px rgba(37, 211, 102, 0.35);
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 35px rgba(37, 211, 102, 0.45);
+}
+
+/* ===============================
+   RESPONSIVE BEHAVIOR
+================================ */
+
+/* Tablets */
+@media (max-width: 992px) {
+    .filter-form {
+        gap: 0.8rem;
+    }
+}
+
+/* ===============================
+   MOBILE FIX: PRICE & DATE INPUTS
+================================ */
+
+@media (max-width: 600px) {
+
+    /* Stack price inputs vertically */
+    .filter-group.price,
+    .filter-group.date {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Normalize input height on mobile */
+    .filter-group input,
+    .filter-group select {
+        height: 42px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+    }
+}
+
+
+/* ===============================
+   MOBILE COMPACT MODE (CRITICAL)
+================================ */
+@media (max-width: 600px) {
+
+    /* ---------- HEADER COMPRESSION ---------- */
+
+    header {
+        padding: 20px 14px 24px; /* reduced vertical space */
+    }
+
+    .vendor-logo {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 6px;
+    }
+
+    header h1 {
+        font-size: 20px;
+        margin: 4px 0;
+        line-height: 1.2;
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 10px;
+        margin-top: 4px;
+    }
+
+    header p {
+        font-size: 12px;
+        margin: 6px 0 10px;
+    }
+
+    .whatsapp-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .share-store {
+        margin-top: 12px;
+    }
+
+    .share-store p {
+        display: none; /* save space */
+    }
+
+    .share-store button {
+        width: 32px;
+        height: 32px;
+        margin: 2px;
+    }
+
+    .create-store-btn {
+        margin-top: 14px;
+        padding: 9px 18px;
+        font-size: 13px;
+    }
+
+    /* ---------- FILTER BAR COMPRESSION ---------- */
+
+    .search-filter {
+        margin: 1.2rem auto;
+        padding: 0.8rem;
+        border-radius: 14px;
+    }
+
+    .filter-form {
+        gap: 0.5rem;
+    }
+
+    .filter-group {
+        flex: 1 1 calc(50% - 0.5rem); /* 2 per row */
+    }
+
+    /* Price & date stay vertical but compact */
+    .filter-group.price,
+    .filter-group.date {
+        flex: 1 1 100%;
+        gap: 0.4rem;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        height: 36px;          /* 👈 KEY FIX */
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+    }
+
+    .filter-btn {
+        height: 36px;
+        font-size: 0.85rem;
+        padding: 0 1rem;
+        border-radius: 10px;
+        box-shadow: 0 8px 18px rgba(37,211,102,0.3);
+    }
+}
+
+
+/* Filter Button */
+.filter-modal-btn {
+    display: none; /* only show on mobile */
+    width: 100%;
+    max-width: 360px;
+    margin: 1rem auto;
+    padding: 0.7rem 1rem;
+    background: linear-gradient(135deg, #25d366, #1ebe57);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(37,211,102,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.filter-modal-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(37,211,102,0.4);
+}
+
+/* Modal Base */
+.filter-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    overflow-y: auto;
+}
+
+/* Modal Content */
+.filter-modal-content {
+    background: #fff;
+    margin: 6% auto;
+    padding: 1.2rem;
+    border-radius: 14px;
+    max-width: 95%;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.2);
+}
+
+/* Close Button */
+.filter-close {
+    color: #333;
+    float: right;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filter-close:hover {
+    color: #25d366;
+}
+
+/* Mobile: Show button, hide original search bar */
+@media (max-width: 600px) {
+    .search-filter { display: none; }
+    .filter-modal-btn { display: flex; }
+}
+
+
+
+/* ===============================
+   PRODUCT GRID
+================================ */
+.product-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+    grid-template-columns: repeat(4, 1fr); /* Desktop: 4 per row */
+    transition: all 0.3s ease;
+}
+
+/* Product Card */
+.product-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Glow Animation */
+.product-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(201,164,55,0.3), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.product-card:hover::before {
+    opacity: 1;
+}
+
+/* Hover effect */
+.product-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(201,164,55,0.35), 0 8px 28px rgba(0,0,0,0.25);
+}
+
+/* Product Image */
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.product-card img:hover {
+    transform: scale(1.05);
+}
+
+/* Product Title */
+.product-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0.5rem 0 0.3rem;
+    color: #1e6b3a;
+}
+
+/* Product Price */
+.product-card p strong {
+    color: #c9a437;
+    font-weight: 700;
+}
+
+/* Description & Status */
+.product-card p {
+    font-size: 0.85rem;
+    color: #333;
+    margin: 0.3rem 0;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: inline-block;
+    margin: 6px 4px 8px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.order-action {
+    background: linear-gradient(135deg, #25d366, #1ebe57);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.3);
+}
+
+.order-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(37,211,102,0.4);
+}
+
+.whatsapp-action {
+    background: #25D366;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.3);
+}
+
+.whatsapp-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(37,211,102,0.4);
+}
+
+/* Share Buttons */
+.share-buttons {
+    margin-top: 8px;
+}
+
+.share-buttons button {
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 2px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.share-buttons button:hover {
+    transform: translateY(-2px);
+    background: #fff;
+}
+
+/* ===============================
+   RESPONSIVE GRID
+================================ */
+
+/* Tablets */
+@media (max-width: 992px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 per row */
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 per row */
+        gap: 1rem;
+        margin: 1rem auto;
+    }
+
+    .product-card img {
+        height: 140px;
+    }
+
+    .action-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .product-card h3 {
+        font-size: 0.9rem;
+    }
+
+    .product-card p {
+        font-size: 0.75rem;
+    }
+}
 
 /* ===== FIXED MODAL GALLERY ===== */
 .modal {
@@ -283,7 +786,7 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
 
     <!-- Store Name + Early Vendor Badge -->
     <h1>
-        {{ vendor.business_name }}
+        {{ vendor.business_name }}<br>
         {% if vendor.is_early_vendor %}
             <span class="badge">🌟 Early Vendor</span>
         {% endif %}
@@ -315,82 +818,66 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
     </a>
 </header>
 
-<div class="search-filter">
-<form method="get" class="filter-form">
+<!-- Search & Filter Button (visible on mobile) -->
+<button class="filter-modal-btn">
+    <i class="fas fa-search"></i> Search & Filter
+</button>
 
-    <!-- 🔍 Search -->
-    <div class="filter-group">
-        <input
-            type="text"
-            name="q"
-            placeholder="Search by name..."
-            value="{{ request.GET.q }}">
+<!-- Filter Modal -->
+<div class="filter-modal">
+    <div class="filter-modal-content">
+        <span class="filter-close">&times;</span>
+
+        <form method="get" class="filter-form">
+            <!-- 🔍 Search -->
+            <div class="filter-group">
+                <input type="text" name="q" placeholder="Search by name..." value="{{ request.GET.q }}">
+            </div>
+
+            <!-- 💰 Price -->
+            <div class="filter-group price">
+                <input type="number" name="min_price" placeholder="Min Price" value="{{ request.GET.min_price }}">
+                <input type="number" name="max_price" placeholder="Max Price" value="{{ request.GET.max_price }}">
+            </div>
+
+            <!-- 📅 Date -->
+            <div class="filter-group date">
+                <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+                <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+            </div>
+
+            <!-- 🗂 Category -->
+            <div class="filter-group">
+                <select name="category">
+                    <option value="">All Categories</option>
+                    {% for c in categories %}
+                        <option value="{{ c.slug }}" {% if request.GET.category == c.slug %}selected{% endif %}>
+                            {{ c.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- 🔃 Sort -->
+            <div class="filter-group">
+                <select name="sort">
+                    <option value="">Newest</option>
+                    <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low → High</option>
+                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High → Low</option>
+                </select>
+            </div>
+
+            <!-- 🔘 Submit -->
+            <div class="filter-group">
+                <button type="submit" class="filter-btn">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+            </div>
+        </form>
     </div>
-
-    <!-- 💰 Price -->
-    <div class="filter-group price">
-        <input
-            type="number"
-            name="min_price"
-            placeholder="Min Price"
-            value="{{ request.GET.min_price }}">
-        <input
-            type="number"
-            name="max_price"
-            placeholder="Max Price"
-            value="{{ request.GET.max_price }}">
-    </div>
-
-    <!-- 📅 Date -->
-    <div class="filter-group date">
-        <input
-            type="date"
-            name="start_date"
-            value="{{ request.GET.start_date }}">
-        <input
-            type="date"
-            name="end_date"
-            value="{{ request.GET.end_date }}">
-    </div>
-
-    <!-- 🗂 Category (NEW, SAFE ADDITION) -->
-    <div class="filter-group">
-        <select name="category">
-            <option value="">All Categories</option>
-            {% for c in categories %}
-                <option value="{{ c.slug }}"
-                    {% if request.GET.category == c.slug %}selected{% endif %}>
-                    {{ c.name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <!-- 🔃 Sort (NEW, SAFE ADDITION) -->
-    <div class="filter-group">
-        <select name="sort">
-            <option value="">Newest</option>
-            <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>
-                Oldest
-            </option>
-            <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>
-                Price: Low → High
-            </option>
-            <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>
-                Price: High → Low
-            </option>
-        </select>
-    </div>
-
-    <!-- 🔘 Submit -->
-    <div class="filter-group">
-        <button type="submit" class="filter-btn">
-            <i class="fas fa-search"></i> Filter
-        </button>
-    </div>
-
-</form>
 </div>
+
 
 
 <div class="product-grid">
@@ -578,6 +1065,28 @@ function copyStoreLink(){ navigator.clipboard.writeText("{{ request.build_absolu
 
 // Screenshot
 function takeScreenshot(){ html2canvas(document.body).then(canvas=>{ const link=document.createElement('a'); link.download='{{ vendor.business_name|slugify }}-store.png'; link.href=canvas.toDataURL(); link.click(); }); }
+
+// Modal Logic
+const filterBtn = document.querySelector('.filter-modal-btn');
+const filterModal = document.querySelector('.filter-modal');
+const filterClose = document.querySelector('.filter-close');
+
+filterBtn.addEventListener('click', () => {
+    filterModal.style.display = 'block';
+});
+
+filterClose.addEventListener('click', () => {
+    filterModal.style.display = 'none';
+});
+
+// Close modal if click outside content
+window.addEventListener('click', (e) => {
+    if (e.target === filterModal) {
+        filterModal.style.display = 'none';
+    }
+});
+
+
 </script>
 </body>
 

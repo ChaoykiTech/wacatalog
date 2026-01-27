@@ -490,7 +490,7 @@ def storefront(request, vendor_slug):
     vendor_phone_digits = normalize_whatsapp_phone(vendor.phone)
 
     # Prefilled message
-    prefill_msg = f"Hello, I am interested in your store: {vendor.business_name}. Please share details."
+    prefill_msg = f"Hello, I am interested in your store: {vendor.business_name} on WA Catalog. Please share details."
     prefill_msg_encoded = quote(prefill_msg)  # URL encode properly
     
     paginator = Paginator(products, 6) # storefront grid
