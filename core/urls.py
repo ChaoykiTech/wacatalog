@@ -30,5 +30,9 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('terms/', terms, name='terms'),
     path('privacy/', privacy, name='privacy'),
+    
+    path('blog/', blog_list, name='blog_list'),
+    path('blog/<slug:slug>/', blog_detail, name='blog_detail'),
+
 
 ]

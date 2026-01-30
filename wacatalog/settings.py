@@ -34,13 +34,13 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
 
-# ALLOWED_HOSTS = [
-#   "wacatalog.com",
-#    "www.wacatalog.com",
-#    "wacatalog.onrender.com",
-#]
+ALLOWED_HOSTS = [
+    "wacatalog.com",
+    "www.wacatalog.com",
+    "wacatalog.onrender.com",
+]
 
 # Application definition
 
@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'ckeditor',
+    'ckeditor_uploader',
     
 ]
 
@@ -150,6 +152,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 

@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ blog.title }} – WACatalog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{% static 'favicon.png' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+  --green-start:#1e6b3a;
+  --green-end:#143f2a;
+  --gold:#c9a437;
+  --border:rgba(255,255,255,.15);
+  --shadow-glow:rgba(30,107,58,0.3);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{
+  background:#fff;
+  color:#1f1f1f;
+  line-height:1.7;
+}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block;border-radius:16px}
+
+/* Container */
+.container{
+  max-width:900px;
+  margin:50px auto;
+  padding:0 18px;
+}
+
+/* Back button */
+.back-btn{
+  display:inline-block;
+  margin-bottom:30px;
+  color:var(--green-start);
+  font-weight:500;
+  transition:.2s;
+}
+.back-btn:hover{color:var(--gold)}
+
+/* Blog Card with Gradient + Glass Effect */
+.blog-card{
+  background: linear-gradient(135deg, var(--green-start), var(--green-end));
+  border-radius: 24px;
+  padding:40px 30px;
+  color:#fff;
+  box-shadow: 0 10px 30px var(--shadow-glow);
+  transition:.3s;
+}
+.blog-card:hover{
+  box-shadow: 0 15px 40px var(--shadow-glow);
+}
+
+/* Featured Image */
+.featured-img{
+  width:100%;
+  height:auto;
+  object-fit:cover;
+  border-radius:16px;
+  margin-bottom:30px;
+  box-shadow:0 8px 25px rgba(0,0,0,.2);
+}
+
+/* Title & Date */
+.blog-card h1{
+  color:var(--gold);
+  margin-bottom:12px;
+  font-size:32px;
+  text-align:center;
+}
+.blog-card .date{
+  font-size:14px;
+  color:#eee;
+  margin-bottom:30px;
+  text-align:center;
+}
+
+/* Content */
+.blog-card .content{
+  font-size:16px;
+  color:#fff;
+  line-height:1.8;
+}
+.blog-card .content p{
+  margin-bottom:18px;
+}
+.blog-card .content img{
+  max-width:100%;
+  border-radius:16px;
+  margin:20px 0;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .blog-card{
+    padding:30px 20px;
+  }
+  .blog-card h1{
+    font-size:28px;
+  }
+}
+
+/* ================= HEADER ================= */
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(236, 236, 236, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Nav container */
+.nav {
+  max-width: 1200px;
+  margin: auto;
+  padding: 14px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 60px;
+  transition: transform 0.2s;
+}
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+/* Nav buttons */
+.nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: .25s;
+  cursor: pointer;
+}
+
+/* ================= HEADER BUTTONS FIX ================= */
+header .btn {
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Green Button */
+header .btn-green {
+  background: var(--green);
+  color: #fff;
+  border: 1px solid var(--green);
+}
+
+header .btn-green:hover {
+  background: #14522b;
+  color: #fff;
+  border-color: #14522b;
+}
+
+/* Gold Button */
+header .btn-gold {
+  background: var(--gold);
+  color: #000;
+  border: 1px solid var(--gold);
+}
+
+header .btn-gold:hover {
+  background: #e0c85f;
+  color: #000;
+  border-color: #e0c85f;
+}
+
+/* Outline Button - fully visible on white background */
+header .btn-outline {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+
+header .btn-outline:hover {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .nav { flex-direction: column; gap: 12px; }
+  .nav-buttons { justify-content: center; }
+}
+
+footer{
+background:#f8f8f8;
+padding:40px 18px;
+margin-top:80px;
+text-align:center;
+font-size:13px;
+color:#777
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <img src="{% static 'images/logo.png' %}" alt="WACatalog Logo">
+    </div>
+
+    <div class="nav-buttons">
+      {% if request.user.is_authenticated %}
+        <a href="/dashboard" class="btn btn-green">Dashboard</a>
+        <a href="/logout" class="btn btn-outline">Logout</a>
+        <a href="#" class="btn btn-outline">Marketplace</a>
+      {% else %}
+        <a href="/login" class="btn btn-outline">Login</a>
+        <a href="/register" class="btn btn-green">Create Store</a>
+        <a href="#" class="btn btn-outline">Marketplace</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go Back</a>
+
+  <div class="blog-card">
+    {% if blog.featured_image %}
+      <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="featured-img">
+    {% endif %}
+
+    <h1>{{ blog.title }}</h1>
+    <div class="date">{{ blog.created_at|date:"F j, Y" }}</div>
+
+    <div class="content">
+      {{ blog.content|safe }}
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 WACatalog
+</footer>
+
+</body>
+</html>

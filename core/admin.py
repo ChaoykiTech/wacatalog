@@ -3,7 +3,7 @@ from django.urls import path
 from django.template.response import TemplateResponse
 from datetime import datetime
 
-from .models import Vendor, Product, ProductImage, PasswordResetOTP
+from .models import Vendor, Product, ProductImage, PasswordResetOTP, Blog
 
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -141,7 +141,14 @@ class PasswordResetOTPAdmin(admin.ModelAdmin):
             return format_html('<a href="{}" target="_blank">{}</a>', full_url, full_url)
         return "-"
     reset_link.short_description = "Password Reset URL"
-    
+   
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ('title', 'created_at', 'is_published')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'content')
+    list_filter = ('created_at',) 
     
 # ----------------------------
 # ACTIVATE CUSTOM ADMIN
@@ -153,3 +160,4 @@ admin_site.register(Vendor, VendorAdmin)
 admin_site.register(User, UserAdmin)
 admin_site.register(PasswordResetOTP, PasswordResetOTPAdmin)
 admin_site.register(Category)
+admin_site.register(Blog)

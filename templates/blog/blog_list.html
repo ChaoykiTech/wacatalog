@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blog – WACatalog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{% static 'favicon.png' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+--green:#1e6b3a;
+--gold:#c9a437;
+--border:rgba(0,0,0,.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#fff;color:#1f1f1f;line-height:1.6}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block;border-radius:16px}
+
+/* Container */
+.container{max-width:1200px;margin:auto;padding:70px 18px}
+
+/* Back button */
+.back-btn{display:inline-block;margin-bottom:30px;color:var(--green);font-weight:500;transition:.2s}
+.back-btn:hover{color:var(--gold)}
+
+/* Section title */
+h1{color:var(--green);margin-bottom:50px;text-align:center;font-size:36px}
+
+/* Blog Cards */
+.blog-grid{display:grid;grid-template-columns:1fr;gap:30px}
+.blog-card{
+border:1px solid var(--border);
+border-radius:24px;
+overflow:hidden;
+transition:.3s;
+background:#fff;
+}
+.blog-card:hover{box-shadow:0 20px 50px rgba(0,0,0,.1)}
+.blog-card img{width:100%;height:220px;object-fit:cover}
+.blog-card-content{padding:20px 28px}
+.blog-card h2{color:var(--green);margin-bottom:10px;font-size:24px}
+.blog-card p{color:#444;margin-bottom:14px;font-size:15px}
+.blog-card a{color:var(--green);font-weight:500;transition:.2s}
+.blog-card a:hover{color:var(--gold)}
+
+/* Responsive Grid */
+@media(min-width:768px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1200px){.blog-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* ================= HEADER ================= */
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(236, 236, 236, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Nav container */
+.nav {
+  max-width: 1200px;
+  margin: auto;
+  padding: 14px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 60px;
+  transition: transform 0.2s;
+}
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+/* Nav buttons */
+.nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: .25s;
+  cursor: pointer;
+}
+
+/* ================= HEADER BUTTONS FIX ================= */
+header .btn {
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Green Button */
+header .btn-green {
+  background: var(--green);
+  color: #fff;
+  border: 1px solid var(--green);
+}
+
+header .btn-green:hover {
+  background: #14522b;
+  color: #fff;
+  border-color: #14522b;
+}
+
+/* Gold Button */
+header .btn-gold {
+  background: var(--gold);
+  color: #000;
+  border: 1px solid var(--gold);
+}
+
+header .btn-gold:hover {
+  background: #e0c85f;
+  color: #000;
+  border-color: #e0c85f;
+}
+
+/* Outline Button - fully visible on white background */
+header .btn-outline {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+
+header .btn-outline:hover {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .nav { flex-direction: column; gap: 12px; }
+  .nav-buttons { justify-content: center; }
+}
+
+footer{
+background:#f8f8f8;
+padding:40px 18px;
+margin-top:80px;
+text-align:center;
+font-size:13px;
+color:#777
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <img src="{% static 'images/logo.png' %}" alt="WACatalog Logo">
+    </div>
+
+    <div class="nav-buttons">
+      {% if request.user.is_authenticated %}
+        <a href="/dashboard" class="btn btn-green">Dashboard</a>
+        <a href="/logout" class="btn btn-outline">Logout</a>
+        <a href="#" class="btn btn-outline">Marketplace</a>
+      {% else %}
+        <a href="/login" class="btn btn-outline">Login</a>
+        <a href="/register" class="btn btn-green">Create Store</a>
+        <a href="#" class="btn btn-outline">Marketplace</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go Back</a>
+  <h1>WACatalog Blog</h1>
+
+  {% if blogs %}
+  <div class="blog-grid">
+    {% for blog in blogs %}
+    <div class="blog-card">
+      {% if blog.featured_image %}
+        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+      {% endif %}
+      <div class="blog-card-content">
+        <h2>{{ blog.title }}</h2>
+        <p>{{ blog.excerpt }}</p>
+        <a href="{% url 'blog_detail' blog.slug %}">Read full article →</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p style="text-align:center;color:#777;margin-top:50px">No blog posts yet.</p>
+  {% endif %}
+</div>
+
+<footer>
+  © 2026 WACatalog
+</footer>
+
+</body>
+</html>

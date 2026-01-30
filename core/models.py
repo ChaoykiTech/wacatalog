@@ -6,6 +6,8 @@ from datetime import timedelta
 from django.utils import timezone
 from cloudinary_storage.storage import MediaCloudinaryStorage
 from django.urls import reverse
+from ckeditor.fields import RichTextField
+from cloudinary.models import CloudinaryField
 
 
 class Category(models.Model):
@@ -155,13 +157,23 @@ class PasswordResetOTP(models.Model):
 
     def __str__(self):
         return f"{self.vendor.business_name} OTP ({self.otp_code})"
-    
-    
+
 class Blog(models.Model):
     title = models.CharField(max_length=200)
     excerpt = models.TextField()
+    content = RichTextField(blank=True)
+
+    featured_image = CloudinaryField(
+        'image',
+        blank=True,
+        null=True
+    )
+
     slug = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    is_published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
+
