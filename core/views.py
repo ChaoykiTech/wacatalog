@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .models import Vendor, PasswordResetOTP
+from .models import Vendor, PasswordResetOTP, Blog
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from .models import Product, ProductImage
@@ -41,7 +41,9 @@ def normalize_phone(phone):
 
 
 def home(request):
-    return render(request, 'home.html')
+    blogs = Blog.objects.order_by('-created_at')[:3]
+    return render(request, 'home.html', {'blogs': blogs})
+
 
 
 def register(request):
@@ -211,12 +213,31 @@ def update_vendor(request):
     if request.method == "POST":
         vendor = Vendor.objects.get(user=request.user)
 
+        # --- PASSWORD CHANGE (handle first) ---
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password or confirm_password:
+            if new_password != confirm_password:
+                messages.error(request, "Passwords do not match")
+                return redirect('dashboard')
+
+            request.user.set_password(new_password)
+            request.user.save()
+
+            logout(request)
+            messages.success(
+                request,
+                "Password changed successfully. Please log in with your new password."
+            )
+            return redirect('login')  # 🔥 STOP here
+
+        # --- PROFILE UPDATE ---
         vendor.business_name = request.POST.get('business_name')
         vendor.address = request.POST.get('address')
         vendor.country = request.POST.get('country')
-        
-        category_id = request.POST.get('category')
 
+        category_id = request.POST.get('category')
         if category_id and category_id.isdigit():
             vendor.category = get_object_or_404(Category, id=category_id)
         else:
@@ -224,20 +245,14 @@ def update_vendor(request):
 
         # Logo upload
         if 'logo' in request.FILES:
-            vendor.logo.save(request.FILES['logo'].name, request.FILES['logo'], save=False)
-        vendor.save()
-
-        # Password change
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
-        if new_password and new_password == confirm_password:
-            request.user.set_password(new_password)
-            request.user.save()
+            vendor.logo = request.FILES['logo']
 
         vendor.save()
         messages.success(request, "Account updated successfully!")
         return redirect('dashboard')
+
     return redirect('dashboard')
+
 
 # -------------------------------
 # Get Product Data (for Edit Modal)
@@ -640,3 +655,21 @@ def product_detail(request, vendor_slug, product_slug):
         'vendor': vendor,
         'product': product
     })
+    
+    
+from django.shortcuts import render
+
+def how_it_works(request):
+    return render(request, 'pages/how_it_works.html')
+
+
+def about(request):
+    return render(request, 'pages/about.html')
+
+
+def terms(request):
+    return render(request, 'pages/terms.html')
+
+
+def privacy(request):
+    return render(request, 'pages/privacy.html')

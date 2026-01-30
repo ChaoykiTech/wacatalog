@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>About – WACatalog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{% static 'favicon.png' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--green:#1e6b3a;
+--gold:#c9a437;
+--dark:#0f2f1e;
+--border:rgba(0,0,0,.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#fff;color:#1f1f1f}
+a{text-decoration:none;color:inherit}
+
+header{
+background:#fff;
+border-bottom:1px solid var(--border)
+}
+.nav{
+max-width:1200px;margin:auto;
+padding:16px 18px;
+display:flex;justify-content:space-between;align-items:center
+}
+.logo img{height:70px}
+
+.btn{
+padding:10px 20px;border-radius:40px;
+font-size:14px;font-weight:500;
+display:inline-flex;align-items:center;justify-content:center;
+transition:.25s
+}
+.btn-green{background:var(--green);color:#fff}
+.btn-outline{border:1px solid var(--green);color:var(--green)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.15)}
+
+.page{
+padding:70px 18px
+}
+.container{
+max-width:900px;margin:auto
+}
+.card{
+border:1px solid var(--border);
+border-radius:24px;
+padding:36px;
+background:#fff
+}
+.card h1{
+font-size:32px;margin-bottom:18px;color:var(--green)
+}
+.card p{
+font-size:15px;line-height:1.7;color:#444;margin-bottom:16px
+}
+
+.back-btn{margin-bottom:20px}
+
+footer{
+background:#f8f8f8;
+padding:40px 18px;
+margin-top:80px;
+text-align:center;
+font-size:13px;
+color:#777
+}
+</style>
+
+</head>
+
+<body>
+<header>
+  <div class="nav">
+    <div class="logo">
+      <img src="{% static 'images/logo.png' %}">
+    </div>
+  </div>
+</header>
+
+<section class="page">
+  <div class="container">
+    <a href="javascript:history.back()" class="btn btn-outline back-btn">← Go Back</a>
+
+    <div class="card">
+      <h1>About WACatalog</h1>
+      <p>WACatalog helps African sellers turn WhatsApp into a real online store.</p>
+      <p>Instead of posting products daily, vendors share one clean link.</p>
+      <p>Customers browse freely and order directly on WhatsApp.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 WACatalog
+</footer>
+
+</body>
+</html>

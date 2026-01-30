@@ -24,5 +24,11 @@ urlpatterns = [
     path('otp/confirm/<uuid:token>/', otp_confirm_view, name='otp_confirm'),
     path('reset-password/<uuid:token>/', reset_password_page, name='reset_password'),
     
-    path('store/<slug:vendor_slug>/product/<slug:product_slug>/', product_detail, name='product_detail')
+    path('store/<slug:vendor_slug>/product/<slug:product_slug>/', product_detail, name='product_detail'),
+
+    path('how-it-works/', how_it_works, name='how_it_works'),
+    path('about/', about, name='about'),
+    path('terms/', terms, name='terms'),
+    path('privacy/', privacy, name='privacy'),
+
 ]

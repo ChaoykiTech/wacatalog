@@ -278,6 +278,60 @@ font-size:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)
 <section>
   <div class="container">
     <div class="section-title">
+      <h2>What Vendors Are Saying</h2>
+      <p>Real feedback from early sellers</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <p>“This saved me from posting daily on WhatsApp. Customers just browse and order.”</p>
+        <strong>— Mama Nkechi (Food Seller)</strong>
+      </div>
+
+      <div class="feature">
+        <p>“My store looks professional now. Buyers trust me more.”</p>
+        <strong>— David (Shoe Maker)</strong>
+      </div>
+
+      <div class="feature">
+        <p>“One link everywhere. Simple and powerful.”</p>
+        <strong>— Aisha (Fashion Vendor)</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+    <div class="section-title">
+      <h2>Sample Vendor Stores</h2>
+      <p>See how storefronts look</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <img src="{% static 'images/sample1.png' %}" alt="">
+        <p><a href="#">View Store →</a></p>
+      </div>
+
+      <div class="feature">
+        <img src="{% static 'images/sample2.png' %}" alt="">
+        <p><a href="#">View Store →</a></p>
+      </div>
+
+      <div class="feature">
+        <img src="{% static 'images/sample3.png' %}" alt="">
+        <p><a href="#">View Store →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+    <div class="section-title">
       <h2>Simple Pricing</h2>
       <p>No hidden fees.</p>
     </div>
@@ -329,6 +383,26 @@ font-size:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)
   </div>
 </section>
 
+<section>
+  <div class="container">
+    <div class="section-title">
+      <h2>From Our Blog</h2>
+      <p>Tips for selling better on WhatsApp</p>
+    </div>
+
+    <div class="features">
+      {% for blog in blogs %}
+      <div class="feature">
+        <h3>{{ blog.title }}</h3>
+        <p>{{ blog.excerpt }}</p>
+        <a href="{% url 'blog_detail' blog.slug %}">Read More →</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
 <section class="cta-strip">
 <h2>Stop Posting Products On Your Status. Start Selling Today.</h2>
 <p>One link. One store. Thousands of customers.</p>
@@ -338,9 +412,9 @@ font-size:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)
 <footer>
 <div class="footer-grid">
 <div><img src="{% static 'images/logo.png' %}" alt="WACatalog Logo" style="height:40px"><p>Helping African businesses sell smarter.</p></div>
-<div><h4>Platform</h4><a href="#">How It Works</a><a href="#pricing">Pricing</a></div>
-<div><h4>Company</h4><a href="#contact">About</a><a href="#contact">Contact</a></div>
-<div><h4>Social</h4><a href="https://api.whatsapp.com/send?phone=2348105622233&text=Hello%20WACatalog">WhatsApp</a><a href="#">Instagram</a></div>
+<div><h4>Company</h4><a href="/how-it-works">How It Works</a><a href="/about">About</a><a href="/terms">Terms</a><a href="/privacy">Privacy Policy</a></div>
+<div><h4>Contact</h4><a href="mailto:support@wacatalog.com">support@wacatalog.com</a><a href="https://api.whatsapp.com/send?phone=2348105622233&text=Hello%20WACatalog" target="_blank">WhatsApp</a></div>
+<div><h4>Social</h4><a href="https://facebook.com/wacatalog" target="_blank">Facebook</a><a href="https://instagram.com/wa_catalog" target="_blank">Instagram</a><a href="https://whatsapp.com/channel/0029Vb7Ozl07j6g4H5liXf2N" target="_blank">WhatsApp Channel</a></div>
 </div>
 <div class="footer-bottom">© 2026 WACatalog</div>
 </footer>
