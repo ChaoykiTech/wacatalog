@@ -443,11 +443,11 @@
 
 <header>
     <div class="platform-logo"></div>
-    {% if user.is_authenticated and user.vendor %}
-        <img src="{{ user.vendor.logo.url }}" alt="{{ user.vendor.business_name }}" class="vendor-logo">
-        <h1>Welcome, {{ user.vendor.business_name }}</h1>
+
+    {% if user.is_authenticated %}
+        <h1>WA Catalog - Vendors Marketplace</h1>
         <div class="nav-buttons">
-            <a href="{% url 'vendor_dashboard' %}" class="auth-btn">Dashboard</a>
+            <a href="{% url 'dashboard' %}" class="auth-btn">Dashboard</a>
             <a href="{% url 'logout' %}" class="auth-btn">Logout</a>
         </div>
     {% else %}
@@ -457,11 +457,13 @@
             <a href="{% url 'register' %}" class="auth-btn">Create Store</a>
         </div>
     {% endif %}
+
     <div class="nav-buttons">
         <a href="{% url 'marketplace_home' %}">← Marketplace Home</a>
         <a href="{% url 'marketplace_vendors' %}">View Vendors Marketplace →</a>
     </div>
 </header>
+
 
 <!-- Add this just after your header/nav section -->
 <div style="text-align:center; margin: 2rem 0;">

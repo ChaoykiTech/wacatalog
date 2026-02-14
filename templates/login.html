@@ -4,6 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{% static 'favicon.png' %}" type="image/png">
+
 <title>WACatalog – Login</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -99,6 +101,28 @@ footer p{font-size:0.95em;}
 .alert {
     animation: fadeIn 0.5s ease-out;
 }
+
+
+/* Password Toggle */
+.password-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.1em;
+  color: var(--green);
+  user-select: none;
+}
+
+.password-toggle:hover {
+  color: var(--dark);
+}
+
 </style>
 </head>
 <body>
@@ -145,6 +169,37 @@ Don't have an account? <a href="{% url 'register' %}" class="toggle-link">Regist
 <footer>
 <p>&copy; 2026 WACatalog. Empowering African businesses.</p>
 </footer>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const passwordInputs = document.querySelectorAll('input[type="password"]');
+
+    passwordInputs.forEach(function (input) {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("password-wrapper");
+
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        const toggle = document.createElement("span");
+        toggle.classList.add("password-toggle");
+        toggle.innerHTML = "👁️";
+
+        toggle.addEventListener("click", function () {
+            if (input.type === "password") {
+                input.type = "text";
+                toggle.innerHTML = "🙈";
+            } else {
+                input.type = "password";
+                toggle.innerHTML = "👁️";
+            }
+        });
+
+        wrapper.appendChild(toggle);
+    });
+});
+</script>
 
 </body>
 </html>
