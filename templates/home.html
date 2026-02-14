@@ -203,11 +203,11 @@ font-size:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)
       {% if request.user.is_authenticated %}
         <a href="/dashboard" class="btn btn-green">Dashboard</a>
         <a href="/logout" class="btn btn-outline">Logout</a>
-        <a href="#" class="btn btn-outline">Marketplace</a>
+        <a href="{% url 'marketplace_home' %}" class="btn btn-outline">Marketplace</a>
       {% else %}
         <a href="/login" class="btn btn-outline">Login</a>
         <a href="/register" class="btn btn-green">Create Store</a>
-        <a href="#" class="btn btn-outline">Marketplace</a>
+        <a href="{% url 'marketplace_home' %}" class="btn btn-outline">Marketplace</a>
       {% endif %}
     </div>
   </div>
@@ -220,7 +220,7 @@ font-size:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)
 <p>Stop Daily Posting on WhatsApp Status.<br> Share one link. Sell smarter.</p>
 <div class="hero-actions">
 <a href="/register" class="btn btn-green">Create Free Store</a>
-<a href="#" class="btn btn-gold">Browse Stores</a>
+<a href="{% url 'marketplace_vendors' %}" class="btn btn-gold">Browse Stores</a>
 </div>
 </div>
 

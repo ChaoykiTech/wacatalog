@@ -1,0 +1,26 @@
+<div class="vendor-card">
+    {% if vendor.logo %}
+        <img src="{{ vendor.logo.url }}" alt="{{ vendor.business_name }}">
+    {% endif %}
+
+    <h3>{{ vendor.business_name }}</h3>
+
+    {% if vendor.category %}
+        <p>{{ vendor.category.name }}</p>
+    {% endif %}
+
+    <p>{{ vendor.address }}</p>
+    <p>{{ vendor.country }}</p>
+
+    {% if vendor.is_featured %}
+        <span class="badge featured">Featured</span>
+    {% endif %}
+
+    {% if vendor.is_sponsored %}
+        <span class="badge sponsored">Sponsored</span>
+    {% endif %}
+
+    <a href="{% url 'vendor_store' vendor.slug %}">
+        View Store
+    </a>
+</div>

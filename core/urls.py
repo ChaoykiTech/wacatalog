@@ -1,6 +1,13 @@
 from django.urls import path
 from .views import *
 
+from django.conf.urls import handler404, handler500, handler403, handler400
+
+handler404 = 'myapp.views.custom_404'
+handler500 = 'myapp.views.custom_500'
+handler403 = 'myapp.views.custom_403'
+handler400 = 'myapp.views.custom_400'
+
 urlpatterns = [
     path('', home, name='home'),
     path('register/', register, name='register'),
@@ -33,6 +40,12 @@ urlpatterns = [
     
     path('blog/', blog_list, name='blog_list'),
     path('blog/<slug:slug>/', blog_detail, name='blog_detail'),
+    
+    
+    # marketplace
+    path('marketplace/vendors/', marketplace_vendors, name='marketplace_vendors'),
+    path('marketplace/products/', marketplace_products, name='marketplace_products'),
+    path('marketplace/', marketplace_home, name='marketplace_home'),
 
 
 ]

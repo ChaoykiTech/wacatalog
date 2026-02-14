@@ -8,6 +8,7 @@ from cloudinary_storage.storage import MediaCloudinaryStorage
 from django.urls import reverse
 from ckeditor.fields import RichTextField
 from cloudinary.models import CloudinaryField
+from .managers import MarketplaceVendorQuerySet
 
 
 class Category(models.Model):
@@ -26,6 +27,7 @@ class Vendor(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     address = models.CharField(max_length=200)
     country = models.CharField(max_length=60)
+    objects = MarketplaceVendorQuerySet.as_manager()
     logo = models.ImageField(
         upload_to='logos/',
         storage=MediaCloudinaryStorage(),
@@ -50,6 +52,10 @@ class Vendor(models.Model):
 
 
     is_early_vendor = models.BooleanField(default=False) # for badge
+    
+    # marketplace controls
+    is_featured = models.BooleanField(default=False)
+    is_sponsored = models.BooleanField(default=False)
 
 
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,259 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'favicon.png' %}" type="image/png">
+
+    <title>WA Catalog Marketplace</title>
+    <meta name="description" content="Discover vendors and products on WA Catalog Marketplace. Browse trusted businesses and products near you.">
+
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        color: #333;
+
+        /* Background image */
+        background: url("{% static 'images/market.png' %}") center / cover no-repeat fixed;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    /* Soft overlay for readability */
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.78); /* adjust transparency here */
+        z-index: -1;
+    }
+
+        /* ===============================
+           HERO HEADER (REUSES STOREFRONT FEEL)
+        =============================== */
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            color: #fff;
+            background:
+                radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 40%),
+                linear-gradient(135deg, #1e6b3a, #145126);
+        }
+
+        header h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 15px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        /* CTA reused */
+        .create-store-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #c9a437, #e0c15a);
+            color: #000;
+            padding: 12px 26px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .create-store-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+        }
+
+        /* ===============================
+           MARKETPLACE GATEWAY
+        =============================== */
+        .marketplace-hero {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 16px;
+            text-align: center;
+        }
+
+        .marketplace-hero h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e6b3a;
+            margin-bottom: 12px;
+        }
+
+        .marketplace-hero p {
+            font-size: 15px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: #444;
+        }
+
+        .gateway-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .gateway-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(14px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 40px 30px;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gateway-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 28px 60px rgba(0,0,0,0.2);
+        }
+
+        .gateway-card h3 {
+            font-size: 22px;
+            color: #1e6b3a;
+            margin-bottom: 10px;
+        }
+
+        .gateway-card p {
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* Buttons (reuse your global style) */
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            background: linear-gradient(135deg, #25d366, #1ebe57);
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(37,211,102,0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(37,211,102,0.4);
+        }
+
+        .auth-section {
+            margin-top: 50px;
+        }
+
+        .auth-section p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            background: #c9a437;
+            color: #000;
+        }
+
+        .back-btn:hover {
+            background: #145126;
+            color: #fff;
+        }
+
+        /* Mobile */
+        @media(max-width: 768px) {
+            .gateway-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .marketplace-hero h2 {
+                font-size: 22px;
+            }
+        }
+
+        /* Footer */
+footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>WA Catalog Marketplace</h1>
+    <p>Discover trusted vendors and products near you</p>
+
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="create-store-btn">
+            Go to Dashboard
+        </a>
+    {% else %}
+        <a href="{% url 'login' %}" class="create-store-btn">
+            Login to Your Store
+        </a>
+    {% endif %}
+</header>
+
+<section class="marketplace-hero">
+
+    <h2>Start Browsing</h2>
+    <p>
+        Choose how you want to explore the marketplace.
+        Browse vendors or jump straight into products.
+    </p>
+
+    <div class="gateway-grid">
+
+        <div class="gateway-card">
+            <h3>Browse Vendors</h3>
+            <p>
+                Discover verified businesses, explore their storefronts,
+                and chat with them directly on WhatsApp.
+            </p>
+            <a href="{% url 'marketplace_vendors' %}" class="btn">
+                Explore Vendors
+            </a>
+        </div>
+
+        <div class="gateway-card">
+            <h3>Browse Products</h3>
+            <p>
+                Search products by category, price, or location
+                and contact vendors instantly.
+            </p>
+            <a href="{% url 'marketplace_products' %}" class="btn">
+                Explore Products
+            </a>
+        </div>
+
+    </div>
+
+    {% if not request.user.is_authenticated %}
+    <div class="auth-section">
+        <p>Are you a business owner?</p>
+        <a href="{% url 'register' %}" class="btn back-btn">
+            Create Your Store on WA Catalog
+        </a>
+    </div>
+    {% endif %}
+
+</section>
+
+<!-- Footer -->
+<footer>
+    <p style="margin:0; font-size:14px; color:#555;">
+        &copy; {{ current_year }} <strong>WACatalog</strong> - Simplifying your online store. <br>
+        Powered by <a href="{% url 'home' %}" target="_blank" style="color:#1e6b3a; text-decoration:none;">WACatalog</a>
+    </p>
+</footer>
+</body>
+</html>

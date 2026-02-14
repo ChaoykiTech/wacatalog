@@ -1,0 +1,581 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'favicon.png' %}" type="image/png">
+
+    <title>WA Catalog - Vendors Marketplace</title>
+    <meta name="description" content="Browse featured, sponsored, and all vendors on WA Catalog. Create your own store and reach more customers.">
+    <meta name="keywords" content="WA Catalog, vendors, marketplace, online store, Nigeria, Africa">
+    <link rel="stylesheet" href="{% static 'css/marketplace.css' %}">
+
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+
+        header{
+            position: relative;
+            padding: 40px 20px 48px;
+            text-align: center;
+            color: #fff;
+            background:
+                radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 40%),
+                linear-gradient(135deg, #1e6b3a, #145126);
+            overflow: hidden;
+        }
+
+        header::after{
+            content:"";
+            position:absolute;
+            inset:auto -40% -60% -40%;
+            height:300px;
+            background: radial-gradient(circle, rgba(201,164,55,0.25), transparent 70%);
+            pointer-events:none;
+        }
+
+        .platform-logo {
+            width:100px;
+            height:100px;
+            border-radius:50%;
+            border:4px solid rgba(255,255,255,0.9);
+            background:#fff url('{% static "images/logo.png" %}') no-repeat center/contain;
+            margin:0 auto 12px;
+        }
+
+        .vendor-logo{
+            width:110px;
+            height:110px;
+            object-fit:cover;
+            border-radius:50%;
+            border:4px solid rgba(255,255,255,0.9);
+            box-shadow:0 15px 35px rgba(0,0,0,0.35);
+            margin-bottom:12px;
+            background:#fff;
+        }
+
+        header h1{
+            font-size:28px;
+            font-weight:800;
+            margin:6px 0 4px;
+            letter-spacing:.3px;
+        }
+
+        .nav-buttons {
+            display:flex;
+            justify-content: center;
+            gap:12px;
+            margin-top:12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons a, .auth-btn {
+            padding:10px 18px;
+            border-radius:12px;
+            font-weight:700;
+            text-decoration:none;
+            color:#fff;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        /* Alternate button colors */
+        .nav-buttons a:nth-child(even), .auth-btn:nth-child(even) {
+            background: linear-gradient(135deg, #c9a437, #a57c1a);
+            box-shadow:0 6px 20px rgba(201,164,55,0.3);
+        }
+        .nav-buttons a:nth-child(odd), .auth-btn:nth-child(odd) {
+            background: linear-gradient(135deg, #25d366, #1ebe57);
+            box-shadow:0 6px 20px rgba(37,211,102,0.3);
+        }
+        .nav-buttons a:hover, .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow:0 12px 28px rgba(0,0,0,0.4);
+        }
+
+        .search-filter {
+            margin: 2rem auto;
+            padding: 1.5rem;
+            max-width: 1200px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(14px);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.25);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+            justify-content:center;
+        }
+
+        .search-filter input,
+        .search-filter select,
+        .search-filter button {
+            padding: 10px 14px;
+            border-radius:12px;
+            border:1px solid #ccc;
+            font-size:14px;
+        }
+
+        .search-filter button {
+            background: linear-gradient(135deg, #25d366, #1ebe57);
+            color:#fff;
+            border:none;
+            cursor:pointer;
+            font-weight:700;
+        }
+
+        /* ====== MOBILE SEARCH/FILTER FIX ====== */
+@media (max-width:767px) {
+    .search-filter {
+        margin: 1rem auto; /* top/bottom spacing */
+        padding: 12px 16px; /* horizontal padding to prevent hugging edges */
+        gap: 8px;
+    }
+
+    .search-filter form {
+        display: flex;
+        flex-wrap: nowrap; /* keep everything on one line */
+        gap: 6px;
+        justify-content: space-between; /* distribute space */
+        width: 100%;
+    }
+
+    .search-filter input,
+    .search-filter select {
+        flex: 1 1 0; /* inputs stretch evenly */
+        min-width: 0; /* prevents overflow */
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+
+    .search-filter button {
+        flex: 0 0 auto; /* keep natural width for the button */
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+}
+
+
+        .vendor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+            gap:16px;
+            margin:2rem auto;
+            max-width:1200px;
+        }
+
+        /* Mobile: 2 cards per row */
+        @media (max-width:767px) {
+            .vendor-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .vendor-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            border-radius:18px;
+            border:1px solid rgba(255,255,255,0.25);
+            box-shadow:0 8px 28px rgba(0,0,0,0.2);
+            padding:1rem;
+            text-align:center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow:hidden;
+        }
+
+        .vendor-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(201,164,55,0.35), 0 8px 28px rgba(0,0,0,0.25);
+        }
+
+        .vendor-card img {
+            width:100%;
+            height:140px;
+            object-fit:cover;
+            border-radius:12px;
+            margin-bottom:0.8rem;
+        }
+
+        .vendor-card h3 {
+            font-size:1rem;
+            font-weight:700;
+            margin:0.5rem 0 0.3rem;
+            color:#1e6b3a;
+        }
+
+        .vendor-card p {
+            font-size:0.85rem;
+            color:#333;
+            margin:0.3rem 0;
+        }
+
+        .vendor-card a {
+            display:block;
+            width:100%;
+            text-align:center;
+            background:#1e6b3a;
+            color:#fff;
+            padding:10px;
+            border-radius:8px;
+            font-weight:600;
+            text-decoration:none;
+        }
+
+        .vendor-card a:hover {
+            background:#15552d;
+        }
+
+        .advert-section {
+            background:#c9a437;
+            padding:20px;
+            margin:30px 0;
+            border-radius:8px;
+            text-align:center;
+        }
+
+        .advert-section a {
+            display:inline-block;
+            margin-top:12px;
+            padding:10px 20px;
+            font-weight:700;
+            border-radius:12px;
+            text-decoration:none;
+            color:#fff;
+            background:#1e6b3a;
+            transition: all .2s ease;
+        }
+
+        .advert-section a:hover {
+            background:#15552d;
+        }
+
+        .pagination {
+            display:flex;
+            justify-content:center;
+            gap:12px;
+            margin:2rem 0;
+        }
+
+        .pagination a {
+            text-decoration:none;
+            font-weight:600;
+            padding:6px 12px;
+            border-radius:8px;
+            background:#25d366;
+            color:#fff;
+        }
+
+        .pagination a:hover {
+            background:#1ebe57;
+        }
+
+        .whatsapp-float {
+            position:fixed;
+            bottom:60px;
+            right:25px;
+            background-color:#25D366;
+            color:#fff;
+            width:60px;
+            height:60px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:32px;
+            text-decoration:none;
+            box-shadow:0 8px 25px rgba(0,0,0,0.25);
+            z-index:2000;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform:scale(1.1);
+            box-shadow:0 12px 35px rgba(0,0,0,0.35);
+        }
+
+        /* Footer */
+footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px solid #ccc; }
+
+/* ====== MOBILE HERO OPTIMIZATION ====== */
+@media (max-width:767px) {
+    header {
+        padding: 20px 12px 24px;
+    }
+
+    header h1 {
+        font-size: 20px;
+        margin: 4px 0 6px;
+    }
+
+    .nav-buttons a, .auth-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .platform-logo {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 8px;
+    }
+
+    .vendor-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 8px;
+    }
+
+    .vendor-grid {
+        grid-template-columns: repeat(2, 1fr); /* already set, just ensuring */
+    }
+}
+
+
+/* ====== Alerts Styling ====== */
+.vendor-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 1200px;
+    margin: 1rem auto 0; /* slightly above header/logo */
+    padding: 0 16px; /* prevents hugging edges */
+}
+
+.alert-box {
+    background: #fffbe6;
+    border-left: 5px solid #c9a437;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideInAlert 0.6s forwards;
+}
+
+.alert-box p {
+    margin: 0;
+}
+
+.alert-box a {
+    color: #1e6b3a;
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 4px;
+    transition: all 0.2s ease;
+}
+
+.alert-box a:hover {
+    text-decoration: underline;
+    color: #145126;
+}
+
+/* Slide-in animation */
+@keyframes slideInAlert {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Different border color for sponsor */
+.sponsor-alert {
+    border-left-color: #25d366;
+}
+
+/* ====== Mobile ====== */
+@media (max-width:767px) {
+    .vendor-alerts {
+        padding: 0 10px;
+    }
+
+    .alert-box {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+}
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== Alerts Section ====== -->
+<div class="vendor-alerts">
+    <div class="alert-box subscribe-alert">
+        <p>Only Subscribed Vendors are shown. 
+            {% if user.is_authenticated %}
+                <a href="{% url 'upgrade' %}">Subscribe to get discovered</a>
+            {% else %}
+                <a href="{% url 'login' %}">Subscribe to get discovered</a>
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="alert-box sponsor-alert">
+        <p>Want to sponsor your Store? 
+            <a href="https://api.whatsapp.com/send?phone=2348105622233&text=I%20want%20to%20sponsor%20my%20store" target="_blank">Contact Support</a>
+        </p>
+    </div>
+</div>
+
+
+<header>
+    <div class="platform-logo"></div>
+    {% if user.is_authenticated and user.vendor %}
+        <img src="{{ user.vendor.logo.url }}" alt="{{ user.vendor.business_name }}" class="vendor-logo">
+        <h1>Welcome, {{ user.vendor.business_name }}</h1>
+        <div class="nav-buttons">
+            <a href="{% url 'vendor_dashboard' %}" class="auth-btn">Dashboard</a>
+            <a href="{% url 'logout' %}" class="auth-btn">Logout</a>
+        </div>
+    {% else %}
+        <h1>WA Catalog - Vendors Marketplace</h1>
+        <div class="nav-buttons">
+            <a href="{% url 'login' %}" class="auth-btn">Login</a>
+            <a href="{% url 'register' %}" class="auth-btn">Create Store</a>
+        </div>
+    {% endif %}
+    <div class="nav-buttons">
+        <a href="{% url 'marketplace_home' %}">← Marketplace Home</a>
+        <a href="{% url 'marketplace_products' %}">View Products Marketplace →</a>
+    </div>
+</header>
+
+<div class="search-filter">
+    <form method="get">
+        <input type="text" name="q" placeholder="Search vendors or categories" value="{{ search_query|default:'' }}">
+        <input type="text" name="address" placeholder="Enter area (e.g., Lagos, Ikorodu)" value="{{ address_filter|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+
+{% if featured_vendors %}
+<h2 style="text-align:center;">Featured Vendors</h2>
+<div class="vendor-grid">
+    {% for vendor in featured_vendors %}
+        <div class="vendor-card">
+            {% if vendor.logo %}
+                <img src="{{ vendor.logo.url }}" alt="{{ vendor.business_name }}">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ vendor.business_name }}">
+            {% endif %}
+            <h3>{{ vendor.business_name }}</h3>
+            <p>Category: {{ vendor.category.name|default:"Uncategorized" }}</p>
+            <p>Country: {{ vendor.country }}</p>
+            <span class="badge featured">Featured</span>
+            <a href="/store/{{ vendor.slug }}/">View Store</a>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if sponsored_vendors %}
+<h2 style="text-align:center;">Sponsored Vendors</h2>
+<div class="vendor-grid">
+    {% for vendor in sponsored_vendors %}
+        <div class="vendor-card">
+            {% if vendor.logo %}
+                <img src="{{ vendor.logo.url }}" alt="{{ vendor.business_name }}">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ vendor.business_name }}">
+            {% endif %}
+            <h3>{{ vendor.business_name }}</h3>
+            <p>Category: {{ vendor.category.name|default:"Uncategorized" }}</p>
+            <p>Country: {{ vendor.country }}</p>
+            <span class="badge sponsored">Sponsored</span>
+            <a href="/store/{{ vendor.slug }}/">View Store</a>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if vendors %}
+<h2 style="text-align:center;">All Vendors</h2>
+<div class="vendor-grid">
+    {% for vendor in vendors %}
+        <div class="vendor-card">
+            {% if vendor.logo %}
+                <img src="{{ vendor.logo.url }}" alt="{{ vendor.business_name }}">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ vendor.business_name }}">
+            {% endif %}
+            <h3>{{ vendor.business_name }}</h3>
+            <p>Category: {{ vendor.category.name|default:"Uncategorized" }}</p>
+            <p>Country: {{ vendor.country }}</p>
+            {% if vendor.store_views > 100 %}
+                <span class="badge popular">Popular</span>
+            {% endif %}
+            <a href="/store/{{ vendor.slug }}/">View Store</a>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="pagination">
+    {% if vendors.has_previous %}
+        <a href="?page={{ vendors.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if country_filter %}&country={{ country_filter }}{% endif %}">Previous</a>
+    {% endif %}
+    <span>Page {{ vendors.number }} of {{ vendors.paginator.num_pages }}</span>
+    {% if vendors.has_next %}
+        <a href="?page={{ vendors.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if country_filter %}&country={{ country_filter }}{% endif %}">Next</a>
+    {% endif %}
+</div>
+
+<div class="advert-section">
+    <h3>Check out our latest deals!</h3>
+    <p>Promote your store here.</p>
+    <a href="{% url 'register' %}">Create Your Store</a>
+</div>
+{% else %}
+<div class="vendor-alerts">
+    <div class="alert-box">
+        <p>
+            No vendors found 
+            {% if search_query %}matching "{{ search_query }}"{% endif %}
+            {% if address_filter %} in "{{ address_filter }}"{% endif %}
+            {% if country_filter %} for country "{{ country_filter }}"{% endif %}.
+        </p>
+        <a href="{% url 'marketplace_vendors' %}" style="
+            display:inline-block;
+            margin-top:8px;
+            padding:8px 14px;
+            background:#1e6b3a;
+            color:#fff;
+            border-radius:12px;
+            text-decoration:none;
+            font-weight:700;
+        ">
+            Clear Search
+        </a>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- Footer -->
+<footer>
+    <p style="margin:0; font-size:14px; color:#555;">
+        &copy; {{ current_year }} <strong>WACatalog</strong> - Simplifying your online store. <br>
+        Powered by <a href="{% url 'home' %}" target="_blank" style="color:#1e6b3a; text-decoration:none;">WACatalog</a>
+    </p>
+</footer>
+
+<a href="https://api.whatsapp.com/send?phone=2348105622233&text=Hello!%20I%20want%20to%20inquire%20about%20WA%20Catalog" class="whatsapp-float" target="_blank">💬</a>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const addressInput = document.querySelector('input[name="address"]');
+    addressInput.addEventListener('input', function(){
+        // Optional: you can fetch matching addresses via AJAX
+        // For now, we rely on server filtering on form submit
+    });
+});
+</script>
+
+
+</body>
+</html>

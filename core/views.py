@@ -20,6 +20,8 @@ from django.db.models import Sum
 from .models import Category
 from .utils import check_and_downgrade_vendor  # your helper
 from django.utils import timezone
+from django.db.models import Q
+
 
 
 
@@ -683,3 +685,149 @@ def blog_list(request):
 def blog_detail(request, slug):
     blog = get_object_or_404(Blog, slug=slug)
     return render(request, 'blog/blog_detail.html', {'blog': blog})
+
+
+
+
+
+from django.db.models import Q
+
+def marketplace_vendors(request):
+    # Base queryset: only subscribed vendors
+    vendors_qs = Vendor.objects.filter(subscription__in=['basic', 'pro'])
+
+    search_query = request.GET.get('q', '').strip()
+    address_query = request.GET.get('address', '').strip()
+    country = request.GET.get('country', '').strip()
+
+    # Apply search filter (OR logic on name/category)
+    if search_query:
+        vendors_qs = vendors_qs.filter(
+            Q(business_name__icontains=search_query) |
+            Q(category__name__icontains=search_query)
+        )
+
+    # Apply address filter (AND logic)
+    if address_query:
+        vendors_qs = vendors_qs.filter(address__icontains=address_query)
+
+    # Apply country filter (AND)
+    if country:
+        vendors_qs = vendors_qs.filter(country__iexact=country)
+
+    # Separate featured & sponsored
+    featured_vendors = vendors_qs.filter(is_featured=True)
+    sponsored_vendors = vendors_qs.filter(is_sponsored=True)
+    vendors = vendors_qs.exclude(is_featured=True, is_sponsored=True)
+
+    # Pagination for all vendors (non-featured/non-sponsored)
+    paginator = Paginator(vendors, 20)  # Show 20 per page
+    page_number = request.GET.get('page')
+    vendors_page = paginator.get_page(page_number)
+
+    # Distinct countries for filter dropdown
+    countries = Vendor.objects.filter(subscription__in=['basic', 'pro']).values_list('country', flat=True).distinct()
+
+    context = {
+        'featured_vendors': featured_vendors,
+        'sponsored_vendors': sponsored_vendors,
+        'vendors': vendors_page,
+        'search_query': search_query,
+        'address_filter': address_query,
+        'country_filter': country,
+        'countries': countries,
+    }
+
+    return render(request, 'core/marketplace_vendors.html', context)
+
+
+
+def marketplace_products(request):
+    products_qs = Product.objects.filter(
+        vendor__subscription__in=['basic', 'pro']
+    )
+
+    # 🔍 Search by product name
+    search_query = request.GET.get('q')
+    if search_query:
+        products_qs = products_qs.filter(name__icontains=search_query)
+
+    # 📂 Category filter
+    category = request.GET.get('category')
+    if category:
+        products_qs = products_qs.filter(category__slug=category)
+
+    # 🌍 Country filter
+    country = request.GET.get('country')
+    if country:
+        products_qs = products_qs.filter(vendor__country__iexact=country)
+
+    # 💰 Price range filter
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
+    if min_price:
+        products_qs = products_qs.filter(price__gte=min_price)
+
+    if max_price:
+        products_qs = products_qs.filter(price__lte=max_price)
+
+    # 🔀 Sorting
+    sort = request.GET.get('sort', 'newest')
+
+    if sort == 'oldest':
+        products_qs = products_qs.order_by('created_at')
+    elif sort == 'price_low':
+        products_qs = products_qs.order_by('price')
+    elif sort == 'price_high':
+        products_qs = products_qs.order_by('-price')
+    else:  # newest (default)
+        products_qs = products_qs.order_by('-created_at')
+
+    # 📄 Pagination
+    paginator = Paginator(products_qs, 20)  # 20 products per page
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
+    # 📌 Filter dropdown data
+    categories = Product.objects.filter(
+        vendor__subscription__in=['basic', 'pro']
+    ).values_list('category__name', 'category__slug').distinct()
+
+    countries = Vendor.objects.filter(
+        subscription__in=['basic', 'pro']
+    ).values_list('country', flat=True).distinct()
+
+    context = {
+        'products': products,
+        'search_query': search_query,
+        'category_filter': category,
+        'country_filter': country,
+        'min_price': min_price,
+        'max_price': max_price,
+        'sort': sort,
+        'categories': categories,
+        'countries': countries,
+    }
+
+    return render(request, 'core/marketplace_products.html', context)
+
+
+def marketplace_home(request):
+    """Gateway page with option to browse vendors or products"""
+    return render(request, 'core/marketplace_home.html')
+
+
+# error handlers views
+
+def custom_404(request, exception):
+    return render(request, '404.html', status=404)
+
+def custom_500(request):
+    return render(request, '500.html', status=500)
+
+def custom_403(request, exception):
+    return render(request, '403.html', status=403)
+
+def custom_400(request, exception):
+    return render(request, '400.html', status=400)

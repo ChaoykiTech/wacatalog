@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>400 - Bad Request | WACatalog</title>
+    <link rel="icon" href="{% static 'favicon.png' %}" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #333;
+        }
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: #fff url('{% static "images/logo.png" %}') no-repeat center/contain;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            font-size: 4rem;
+            color: #c9a437;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+        }
+        a.button {
+            display: inline-block;
+            margin: 0.5rem;
+            padding: 12px 24px;
+            font-weight: 700;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, #25d366, #1ebe57);
+            transition: all 0.2s ease;
+        }
+        a.button:hover {
+            background: linear-gradient(135deg, #1ebe57, #1a9b4d);
+        }
+
+        /* Footer */
+footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div class="logo"></div>
+    <h1>400</h1>
+    <p>Bad Request! Something went wrong with your request.</p>
+    <a href="{% url 'marketplace_home' %}" class="button">← Go to Marketplace Home</a>
+    <a href="{% url 'marketplace_products' %}" class="button">View Products →</a>
+
+    <!-- Footer -->
+<footer>
+    <p style="margin:0; font-size:14px; color:#555;">
+        &copy; {{ current_year }} <strong>WACatalog</strong> - Simplifying your online store. <br>
+        Powered by <a href="{% url 'home' %}" target="_blank" style="color:#1e6b3a; text-decoration:none;">WACatalog</a>
+    </p>
+</footer>
+</body>
+</html>
