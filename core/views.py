@@ -192,6 +192,7 @@ def dashboard(request):
 
     context = {
         'vendor': vendor,
+        'user': request.user,  # ✅ ADD THIS
         'categories': categories,  # ✅ THIS IS THE FIX
         'products': products,  # paginated for dashboard table
         'unlocked_products': unlocked_products,

@@ -426,18 +426,17 @@ footer { background:#f1f1f1; padding:20px; text-align:center; border-top:1px sol
     <div class="platform-logo"></div>
 
     {% if user.is_authenticated %}
-        <h1>WA Catalog - Vendors Marketplace</h1>
-        <div class="nav-buttons">
-            <a href="{% url 'dashboard' %}" class="auth-btn">Dashboard</a>
-            <a href="{% url 'logout' %}" class="auth-btn">Logout</a>
-        </div>
-    {% else %}
-        <h1>WA Catalog - Vendors Marketplace</h1>
-        <div class="nav-buttons">
-            <a href="{% url 'login' %}" class="auth-btn">Login</a>
-            <a href="{% url 'register' %}" class="auth-btn">Create Store</a>
-        </div>
-    {% endif %}
+    <div class="nav-buttons">
+        <a href="/dashboard/" class="auth-btn">Dashboard</a>
+        <a href="/logout/" class="auth-btn">Logout</a>
+    </div>
+{% else %}
+    <div class="nav-buttons">
+        <a href="/login/" class="auth-btn">Login</a>
+        <a href="/register/" class="auth-btn">Create Store</a>
+    </div>
+{% endif %}
+
 
     <div class="nav-buttons">
         <a href="{% url 'marketplace_home' %}">← Marketplace Home</a>

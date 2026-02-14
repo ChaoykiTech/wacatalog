@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -392,7 +394,7 @@ header .user-menu {
         <span>{{ vendor.business_name }}</span>
         <!-- Storefront Button -->
         <a href="{% url 'storefront' vendor.slug %}" target="_blank" class="btn-storefront">View Store</a>
-        <a href="/logout" class="logout">Logout</a>
+        <a href="{% url 'logout' %}" class="logout">Logout</a>
     </div>
 </header>
 
