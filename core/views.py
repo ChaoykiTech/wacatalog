@@ -414,8 +414,8 @@ def add_product(request):
         messages.error(request, "You’ve reached your product limit. Please upgrade.")
         return redirect('upgrade')
 
-    if vendor.subscription == 'basic' and product_count >= 100:
-        messages.error(request, "You’ve reached your product limit. Please upgrade.")
+    if vendor.subscription == 'basic' and product_count >= 1000:
+        messages.error(request, "You’ve reached your product limit. Please upgrade to Pro.")
         return redirect('upgrade')
 
     form = ProductForm()
@@ -521,7 +521,7 @@ def storefront(request, vendor_slug):
     prefill_msg = f"Hello, I am interested in your store: {vendor.business_name} on WA Catalog. Please share details."
     prefill_msg_encoded = quote(prefill_msg)  # URL encode properly
     
-    paginator = Paginator(products, 6) # storefront grid
+    paginator = Paginator(products, 12) # storefront grid
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
